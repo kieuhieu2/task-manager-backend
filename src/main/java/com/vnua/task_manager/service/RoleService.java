@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.vnua.task_manager.dto.request.RoleRequest;
-import com.vnua.task_manager.dto.response.RoleResponse;
+import com.vnua.task_manager.dto.request.authReq.RoleRequest;
+import com.vnua.task_manager.dto.response.authRes.RoleResponse;
 import com.vnua.task_manager.mapper.RoleMapper;
 import com.vnua.task_manager.repository.PermissionRepository;
 import com.vnua.task_manager.repository.RoleRepository;

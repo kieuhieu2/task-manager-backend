@@ -1,7 +1,9 @@
 package com.vnua.task_manager.entity;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import jakarta.persistence.*;
@@ -19,7 +21,10 @@ import lombok.experimental.FieldDefaults;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    String id;
+    String userId;
+
+    @Column(unique = true, nullable = false)
+    String code;
 
     @Column(name = "username", unique = true, columnDefinition = "VARCHAR(255) COLLATE utf8mb4_unicode_ci")
     String username;
@@ -30,7 +35,12 @@ public class User {
     String lastName;
 
     @ManyToMany
-    Set<Role> roles;
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name ="user_id"),
+            inverseJoinColumns = @JoinColumn(name = "name")
+    )
+    Set<Role> roles = new HashSet<>();
 
     @ManyToMany
     @JoinTable(
@@ -48,5 +58,11 @@ public class User {
     )
     Set<Group> groupLeaders = new HashSet<>();
 
+    @OneToMany(mappedBy = "whoCreated", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<Task> tasks;
 
+    Integer taskProgress;
+    Date createdAt;
+    Date updatedAt;
+    Boolean wasDeleted = false;
 }

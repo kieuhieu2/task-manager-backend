@@ -6,10 +6,10 @@ import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.*;
 
-import com.vnua.task_manager.dto.request.ApiResponse;
-import com.vnua.task_manager.dto.request.UserCreationRequest;
-import com.vnua.task_manager.dto.request.UserUpdateRequest;
-import com.vnua.task_manager.dto.response.UserResponse;
+import com.vnua.task_manager.dto.ApiResponse;
+import com.vnua.task_manager.dto.request.userReq.UserCreationRequest;
+import com.vnua.task_manager.dto.request.userReq.UserUpdateRequest;
+import com.vnua.task_manager.dto.response.userRes.UserResponse;
 import com.vnua.task_manager.service.UserService;
 
 import lombok.AccessLevel;

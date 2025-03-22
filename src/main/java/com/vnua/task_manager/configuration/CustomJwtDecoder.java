@@ -14,7 +14,7 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.stereotype.Component;
 
 import com.nimbusds.jose.JOSEException;
-import com.vnua.task_manager.dto.request.IntrospectRequest;
+import com.vnua.task_manager.dto.request.authReq.IntrospectRequest;
 import com.vnua.task_manager.service.AuthenticationService;
 
 @Component

@@ -1,4 +1,4 @@
-package com.vnua.task_manager.dto.request;
+package com.vnua.task_manager.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 

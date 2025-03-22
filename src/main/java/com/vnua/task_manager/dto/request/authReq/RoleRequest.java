@@ -1,4 +1,6 @@
-package com.vnua.task_manager.dto.request;
+package com.vnua.task_manager.dto.request.authReq;
+
+import java.util.Set;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -8,7 +10,8 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class PermissionRequest {
+public class RoleRequest {
     String name;
     String description;
+    Set<String> permissions;
 }

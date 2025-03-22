@@ -11,9 +11,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.vnua.task_manager.constant.PredefinedRole;
-import com.vnua.task_manager.dto.request.UserCreationRequest;
-import com.vnua.task_manager.dto.request.UserUpdateRequest;
-import com.vnua.task_manager.dto.response.UserResponse;
+import com.vnua.task_manager.dto.request.userReq.UserCreationRequest;
+import com.vnua.task_manager.dto.request.userReq.UserUpdateRequest;
+import com.vnua.task_manager.dto.response.userRes.UserResponse;
 import com.vnua.task_manager.entity.Role;
 import com.vnua.task_manager.entity.User;
 import com.vnua.task_manager.exception.AppException;

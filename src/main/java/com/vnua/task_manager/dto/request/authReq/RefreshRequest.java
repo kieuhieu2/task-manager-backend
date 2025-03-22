@@ -1,4 +1,4 @@
-package com.vnua.task_manager.dto.response;
+package com.vnua.task_manager.dto.request.authReq;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -8,7 +8,6 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AuthenticationResponse {
+public class RefreshRequest {
     String token;
-    boolean authenticated;
 }

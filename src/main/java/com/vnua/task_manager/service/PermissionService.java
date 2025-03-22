@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.vnua.task_manager.dto.request.PermissionRequest;
-import com.vnua.task_manager.dto.response.PermissionResponse;
+import com.vnua.task_manager.dto.request.authReq.PermissionRequest;
+import com.vnua.task_manager.dto.response.authRes.PermissionResponse;
 import com.vnua.task_manager.entity.Permission;
 import com.vnua.task_manager.mapper.PermissionMapper;
 import com.vnua.task_manager.repository.PermissionRepository;

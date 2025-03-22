@@ -1,4 +1,4 @@
-package com.vnua.task_manager.dto.request;
+package com.vnua.task_manager.dto.response.authRes;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -8,7 +8,6 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AuthenticationRequest {
-    String username;
-    String password;
+public class IntrospectResponse {
+    boolean valid;
 }

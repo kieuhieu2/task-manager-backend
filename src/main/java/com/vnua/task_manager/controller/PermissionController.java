@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.*;
 
-import com.vnua.task_manager.dto.request.ApiResponse;
-import com.vnua.task_manager.dto.request.PermissionRequest;
-import com.vnua.task_manager.dto.response.PermissionResponse;
+import com.vnua.task_manager.dto.ApiResponse;
+import com.vnua.task_manager.dto.request.authReq.PermissionRequest;
+import com.vnua.task_manager.dto.response.authRes.PermissionResponse;
 import com.vnua.task_manager.service.PermissionService;
 
 import lombok.AccessLevel;

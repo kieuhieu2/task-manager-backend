@@ -1,4 +1,6 @@
-package com.vnua.task_manager.dto.response;
+package com.vnua.task_manager.dto.response.authRes;
+
+import java.util.Set;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -8,7 +10,8 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class PermissionResponse {
+public class RoleResponse {
     String name;
     String description;
+    Set<PermissionResponse> permissions;
 }

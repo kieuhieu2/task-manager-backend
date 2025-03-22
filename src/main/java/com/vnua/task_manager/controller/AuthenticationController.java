@@ -2,15 +2,19 @@ package com.vnua.task_manager.controller;
 
 import java.text.ParseException;
 
+import com.vnua.task_manager.dto.ApiResponse;
+import com.vnua.task_manager.dto.request.authReq.AuthenticationRequest;
+import com.vnua.task_manager.dto.request.authReq.IntrospectRequest;
+import com.vnua.task_manager.dto.request.authReq.LogoutRequest;
+import com.vnua.task_manager.dto.request.authReq.RefreshRequest;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nimbusds.jose.JOSEException;
-import com.vnua.task_manager.dto.request.*;
-import com.vnua.task_manager.dto.response.AuthenticationResponse;
-import com.vnua.task_manager.dto.response.IntrospectResponse;
+import com.vnua.task_manager.dto.response.authRes.AuthenticationResponse;
+import com.vnua.task_manager.dto.response.authRes.IntrospectResponse;
 import com.vnua.task_manager.service.AuthenticationService;
 
 import lombok.AccessLevel;

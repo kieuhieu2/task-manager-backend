@@ -1,11 +1,11 @@
 package com.vnua.task_manager.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.util.Date;
 
 @Getter
 @Setter
@@ -20,4 +20,12 @@ public class Comment {
     Integer commentId;
 
     String comment_text;
+
+    @ManyToOne
+    @JoinColumn(name = "task_id", nullable = false)
+    Task whoCreatedCmt;
+
+    Date createdAt;
+    Date updatedAt;
+    Boolean wasDeleted = false;
 }

@@ -18,12 +18,12 @@ import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
-import com.vnua.task_manager.dto.request.AuthenticationRequest;
-import com.vnua.task_manager.dto.request.IntrospectRequest;
-import com.vnua.task_manager.dto.request.LogoutRequest;
-import com.vnua.task_manager.dto.request.RefreshRequest;
-import com.vnua.task_manager.dto.response.AuthenticationResponse;
-import com.vnua.task_manager.dto.response.IntrospectResponse;
+import com.vnua.task_manager.dto.request.authReq.AuthenticationRequest;
+import com.vnua.task_manager.dto.request.authReq.IntrospectRequest;
+import com.vnua.task_manager.dto.request.authReq.LogoutRequest;
+import com.vnua.task_manager.dto.request.authReq.RefreshRequest;
+import com.vnua.task_manager.dto.response.authRes.AuthenticationResponse;
+import com.vnua.task_manager.dto.response.authRes.IntrospectResponse;
 import com.vnua.task_manager.entity.InvalidatedToken;
 import com.vnua.task_manager.entity.User;
 import com.vnua.task_manager.exception.AppException;
@@ -126,8 +126,8 @@ public class AuthenticationService {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
 
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .subject(user.getUsername())
-                .issuer("devteria.com")
+                .subject(user.getCode())
+                .issuer("vnua.com")
                 .issueTime(new Date())
                 .expirationTime(new Date(
                         Instant.now().plus(VALID_DURATION, ChronoUnit.SECONDS).toEpochMilli()))

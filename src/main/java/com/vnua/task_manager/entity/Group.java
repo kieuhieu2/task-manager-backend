@@ -1,5 +1,6 @@
 package com.vnua.task_manager.entity;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -31,7 +32,12 @@ public class Group {
     @OneToMany(mappedBy = "group",cascade = CascadeType.ALL)
     Set<Task> tasks = new HashSet<>();
 
+    @Column(unique = true, nullable = false)
+    String nameOfGroup;
+
     String faculty;
     String department;
-
+    Date createdAt;
+    Date updatedAt;
+    Boolean wasDeleted = false;
 }

@@ -4,9 +4,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
-import com.vnua.task_manager.dto.request.UserCreationRequest;
-import com.vnua.task_manager.dto.request.UserUpdateRequest;
-import com.vnua.task_manager.dto.response.UserResponse;
+import com.vnua.task_manager.dto.request.userReq.UserCreationRequest;
+import com.vnua.task_manager.dto.request.userReq.UserUpdateRequest;
+import com.vnua.task_manager.dto.response.userRes.UserResponse;
 import com.vnua.task_manager.entity.User;
 
 @Mapper(componentModel = "spring")
