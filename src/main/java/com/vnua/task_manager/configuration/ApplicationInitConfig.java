@@ -2,6 +2,7 @@ package com.vnua.task_manager.configuration;
 
 import java.util.HashSet;
 
+import com.vnua.task_manager.entity.User;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -10,7 +11,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.vnua.task_manager.constant.PredefinedRole;
 import com.vnua.task_manager.entity.Role;
-import com.vnua.task_manager.entity.User;
 import com.vnua.task_manager.repository.RoleRepository;
 import com.vnua.task_manager.repository.UserRepository;
 
@@ -60,6 +60,7 @@ public class ApplicationInitConfig {
                         .username(ADMIN_USER_NAME)
                         .password(passwordEncoder.encode(ADMIN_PASSWORD))
                         .roles(roles)
+                        .code("ADMIN01")
                         .build();
 
                 userRepository.save(user);

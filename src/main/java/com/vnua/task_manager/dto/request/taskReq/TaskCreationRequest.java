@@ -10,13 +10,18 @@ import org.springframework.web.multipart.MultipartFile;
 @Setter
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class taskUserRequest {
+public class TaskCreationRequest {
     @NotNull(message = "Group ID is required")
     Integer groupId;
+
+    @NotNull(message = "User Id is required")
+    String userId;
 
     @NotBlank(message = "Title is required")
     String title;
 
     String description;
-    MultipartFile file;
+    Integer percentDone;
+
+    MultipartFile fileOfTask;
 }

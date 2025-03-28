@@ -2,6 +2,7 @@ package com.vnua.task_manager.mapper;
 
 import com.vnua.task_manager.dto.request.groupReq.GroupCreateReq;
 import com.vnua.task_manager.dto.response.groupRes.GroupCreateRes;
+import com.vnua.task_manager.dto.response.groupRes.GroupGetResponse;
 import com.vnua.task_manager.entity.Group;
 import com.vnua.task_manager.entity.User;
 import com.vnua.task_manager.repository.UserRepository;
@@ -24,6 +25,7 @@ public interface GroupMapper {
     @Mapping(target = "createdAt", expression = "java(new java.util.Date())")
     @Mapping(target = "updatedAt", expression = "java(new java.util.Date())")
     @Mapping(target = "wasDeleted", constant = "false")
+    @Mapping(target = "descriptionOfGroup", source = "descriptionOfGroup")
     Group toEntity(GroupCreateReq request, @Context UserRepository userRepository);
 
     @Named("mapUsersByCodes")
@@ -60,4 +62,9 @@ public interface GroupMapper {
         }
         return users.stream().map(User::getUserId).collect(Collectors.toSet());
     }
+
+    @Mapping(target = "groupId", source = "groupId")
+    @Mapping(target = "nameOfGroup", source = "nameOfGroup")
+    @Mapping(target = "descriptionOfGroup", source = "descriptionOfGroup")
+    List<GroupGetResponse> toGroupGetResponse(List<Group> groups);
 }

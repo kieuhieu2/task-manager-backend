@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import com.vnua.task_manager.dto.ApiResponse;
 import com.vnua.task_manager.dto.request.authReq.RoleRequest;
 import com.vnua.task_manager.dto.response.authRes.RoleResponse;
-import com.vnua.task_manager.service.RoleService;
+import com.vnua.task_manager.service.implement.RoleServiceImpl;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -20,25 +20,25 @@ import lombok.extern.slf4j.Slf4j;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
 public class RoleController {
-    RoleService roleService;
+    RoleServiceImpl roleServiceImpl;
 
     @PostMapping
     ApiResponse<RoleResponse> create(@RequestBody RoleRequest request) {
         return ApiResponse.<RoleResponse>builder()
-                .result(roleService.create(request))
+                .result(roleServiceImpl.create(request))
                 .build();
     }
 
     @GetMapping
     ApiResponse<List<RoleResponse>> getAll() {
         return ApiResponse.<List<RoleResponse>>builder()
-                .result(roleService.getAll())
+                .result(roleServiceImpl.getAll())
                 .build();
     }
 
     @DeleteMapping("/{role}")
     ApiResponse<Void> delete(@PathVariable String role) {
-        roleService.delete(role);
+        roleServiceImpl.delete(role);
         return ApiResponse.<Void>builder().build();
     }
 }

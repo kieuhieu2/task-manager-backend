@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 
 import com.nimbusds.jose.JOSEException;
 import com.vnua.task_manager.dto.request.authReq.IntrospectRequest;
-import com.vnua.task_manager.service.AuthenticationService;
+import com.vnua.task_manager.service.implement.AuthenticationServiceImpl;
 
 @Component
 public class CustomJwtDecoder implements JwtDecoder {
@@ -23,7 +23,7 @@ public class CustomJwtDecoder implements JwtDecoder {
     private String signerKey;
 
     @Autowired
-    private AuthenticationService authenticationService;
+    private AuthenticationServiceImpl authenticationServiceImpl;
 
     private NimbusJwtDecoder nimbusJwtDecoder = null;
 
@@ -31,7 +31,7 @@ public class CustomJwtDecoder implements JwtDecoder {
     public Jwt decode(String token) throws JwtException {
 
         try {
-            var response = authenticationService.introspect(
+            var response = authenticationServiceImpl.introspect(
                     IntrospectRequest.builder().token(token).build());
 
             if (!response.isValid()) throw new JwtException("Token invalid");

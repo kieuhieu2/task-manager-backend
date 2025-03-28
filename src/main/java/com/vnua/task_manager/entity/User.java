@@ -59,10 +59,14 @@ public class User {
     Set<Group> groupLeaders = new HashSet<>();
 
     @OneToMany(mappedBy = "whoCreated", cascade = CascadeType.ALL, orphanRemoval = true)
-    List<Task> tasks;
+    List<Task> createdTasks;
+
+    @OneToMany(mappedBy = "assignee", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Task> tasksAssigned = new HashSet<>();
 
     Integer taskProgress;
     Date createdAt;
     Date updatedAt;
     Boolean wasDeleted = false;
+    String pathOfUserFolder;
 }

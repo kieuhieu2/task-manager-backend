@@ -15,7 +15,9 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "`group`")
+@Table(name = "`group`", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "nameOfGroup")
+})
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Group {
 
@@ -37,6 +39,8 @@ public class Group {
 
     String faculty;
     String department;
+    String descriptionOfGroup;
+    String pathOfGroupFolder;
     Date createdAt;
     Date updatedAt;
     Boolean wasDeleted = false;
