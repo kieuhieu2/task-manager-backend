@@ -14,7 +14,7 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class GroupCreateReq {
 
-    private Set<String> memberCodes;  // Danh sách id của members
+    private Set<String> memberCodes;
     private Set<String> leaderCodes;
 
     @NotBlank(message = "Name of group is required")

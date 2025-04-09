@@ -1,15 +1,14 @@
 package com.vnua.task_manager.mapper;
 
 import com.vnua.task_manager.dto.request.groupReq.GroupCreateReq;
+import com.vnua.task_manager.dto.request.groupReq.GroupUpdateReq;
 import com.vnua.task_manager.dto.response.groupRes.GroupCreateRes;
-import com.vnua.task_manager.dto.response.groupRes.GroupGetResponse;
+import com.vnua.task_manager.dto.response.groupRes.GroupGetRes;
+import com.vnua.task_manager.dto.response.groupRes.GroupUpdateRes;
 import com.vnua.task_manager.entity.Group;
 import com.vnua.task_manager.entity.User;
 import com.vnua.task_manager.repository.UserRepository;
-import org.mapstruct.Context;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
+import org.mapstruct.*;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -66,5 +65,13 @@ public interface GroupMapper {
     @Mapping(target = "groupId", source = "groupId")
     @Mapping(target = "nameOfGroup", source = "nameOfGroup")
     @Mapping(target = "descriptionOfGroup", source = "descriptionOfGroup")
-    List<GroupGetResponse> toGroupGetResponse(List<Group> groups);
+    List<GroupGetRes> toGroupGetResponse(List<Group> groups);
+
+    @Mapping(target = "groupId", ignore = true)
+    Group updateGroup(@MappingTarget Group group, GroupUpdateReq request);
+
+    @Mapping(target = "groupId", source = "groupId")
+    @Mapping(target = "nameOfGroup", source = "nameOfGroup")
+    @Mapping(target = "descriptionOfGroup", source = "descriptionOfGroup")
+    GroupUpdateRes toGroupUpdateRes(Group group);
 }

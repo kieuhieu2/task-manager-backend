@@ -42,7 +42,7 @@ public class User {
     )
     Set<Role> roles = new HashSet<>();
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(
             name = "users_groups",
             joinColumns = @JoinColumn(name = "user_id"),
