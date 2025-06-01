@@ -9,8 +9,11 @@ import com.vnua.task_manager.dto.response.groupRes.GroupUpdateRes;
 import java.util.List;
 
 public interface GroupService {
-    public GroupCreateRes createGroup(GroupCreateReq request);
-    public List<GroupGetRes> getAllGroup();
-    public GroupUpdateRes updateGroup(GroupUpdateReq request);
-    public String deleteGroup(Integer groupId);
+    GroupCreateRes createGroup(GroupCreateReq request);
+    List<GroupGetRes> getAllGroup();
+    GroupUpdateRes updateGroup(GroupUpdateReq request);
+    String deleteGroup(Integer groupId);
+    List<GroupGetRes> getMyGroups(String userCode);
+
+    Boolean addUserToGroup(Integer groupId, String userCode);
 }

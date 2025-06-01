@@ -19,12 +19,19 @@ public class Comment {
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     Integer commentId;
 
-    String comment_text;
-
     @ManyToOne
-    @JoinColumn(name = "task_id", nullable = false)
-    Task whoCreatedCmt;
+    @JoinColumn(name = "private_task_id")
+    PrivateTaskOfGroup privateTask;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "task_id", nullable = false)
+    Task task;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    User user;
+
+    String commentText;
     Date createdAt;
     Date updatedAt;
     Boolean wasDeleted = false;

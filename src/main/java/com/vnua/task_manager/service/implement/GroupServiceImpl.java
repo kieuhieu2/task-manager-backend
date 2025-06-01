@@ -109,4 +109,35 @@ public class GroupServiceImpl implements GroupService {
 
         return "success";
     }
+
+    @Override
+    public List<GroupGetRes> getMyGroups(String userCode) {
+        User user = userRepository.findByCode(userCode)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with code: " + userCode));
+
+        List<Group> groups = groupRepository.getMyGroups(user.getUserId());
+        List<GroupGetRes> groupGetResList = groupMapper.toGroupGetResponse(groups);
+
+        for (GroupGetRes groupGetRes : groupGetResList) {
+            groupGetRes.setIsLeader(securityServiceImpl.isGroupLeader(groupGetRes.getGroupId()));
+        }
+
+        return groupGetResList;
+    }
+
+    @Override
+    public Boolean addUserToGroup(Integer groupId, String userCode) {
+        User user = userRepository.findByCode(userCode)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with code: " + userCode));
+        Group group = groupRepository.findByGroupId(groupId)
+                .orElseThrow(() -> new IllegalArgumentException("Group not found with ID: " + groupId));
+
+        group.getMembers().add(user);
+        user.getGroups().add(group);
+
+        groupRepository.save(group);
+        userRepository.save(user);
+
+        return true;
+    }
 }

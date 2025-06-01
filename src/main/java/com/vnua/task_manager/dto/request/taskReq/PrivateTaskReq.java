@@ -13,18 +13,18 @@ import java.util.List;
 @Setter
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class TaskCreationRequest implements Serializable {
+public class PrivateTaskReq implements Serializable {
     @NotNull(message = "Group ID is required")
     Integer groupId;
 
-    @NotNull(message = "User Code is required")
-    String userCode;
+    @NotNull(message = "User Id is required")
+    String userId;
 
     @NotBlank(message = "Title is required")
     String title;
 
     String description;
     Integer percentDone;
-    List<String> assigneesUserCode;
     MultipartFile fileOfTask;
+    List<String> assigneesUserCode;
 }

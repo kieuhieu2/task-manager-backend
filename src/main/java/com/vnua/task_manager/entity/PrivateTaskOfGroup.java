@@ -2,25 +2,24 @@ package com.vnua.task_manager.entity;
 
 import com.vnua.task_manager.entity.enumsOfEntity.TaskState;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Getter
 @Setter
-@FieldDefaults(level = AccessLevel.PRIVATE)
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
 @Entity
-public class Task {
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class PrivateTaskOfGroup {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer taskId;
+    Long privateTaskId;
 
     @ManyToOne
     @JoinColumn(name = "group_id", nullable = false)
@@ -30,15 +29,23 @@ public class Task {
     @JoinColumn(name = "user_id", nullable = false)
     User whoCreated;
 
-    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
-    List<Comment> commentsOfTask = new ArrayList<>();
-
     @Enumerated(EnumType.STRING)
     TaskState state = TaskState.TODO;
 
     @ManyToOne
     @JoinColumn(name = "assignee_id")
     User assignee;
+
+    @OneToMany(mappedBy = "privateTask")
+    List<Comment> commentsOfTask = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "private_task_assignees",
+            joinColumns = @JoinColumn(name = "private_task_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    List<User> assigneesUser = new ArrayList<>();
 
     String title;
     String description;

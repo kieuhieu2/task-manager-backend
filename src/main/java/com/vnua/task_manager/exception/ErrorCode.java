@@ -20,7 +20,10 @@ public enum ErrorCode {
     GROUP_NOT_FOUND(1010, "Group not found" , HttpStatus.NOT_FOUND ),
     FOLDER_RENAME_FAILED(1011,"Folder rename failed" ,HttpStatus.CONFLICT ),
     INVALID_REQUEST(1012, "Invalid request" , HttpStatus.BAD_REQUEST ),
-    ;
+    COMMENT_CREATION_FAILED(1013,"Comment creation failed" , HttpStatus.BAD_REQUEST ),
+    COMMENT_NOT_FOUND(1014, "Comment not found", HttpStatus.NOT_FOUND),
+    NOTIFICATION_NOT_FOUND(1015,"Notification not found", HttpStatus.NOT_FOUND ),
+    USER_NOT_FOUND(1016, "User not found", HttpStatus.NOT_FOUND ),;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {
         this.code = code;

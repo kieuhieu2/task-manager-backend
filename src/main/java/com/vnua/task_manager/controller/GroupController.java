@@ -32,6 +32,13 @@ public class GroupController {
                 .build();
     }
 
+    @GetMapping("/my-groups/{userCode}")
+    ApiResponse<List<GroupGetRes>> getMyGroups(@PathVariable String userCode) {
+        return ApiResponse.<List<GroupGetRes>>builder()
+                .result(groupService.getMyGroups(userCode))
+                .build();
+    }
+
     @GetMapping
     ApiResponse<List<GroupGetRes>> getAllGroup() {
         var result = groupService.getAllGroup();
@@ -51,6 +58,13 @@ public class GroupController {
     ApiResponse<String> deleteGroup(@PathVariable Integer groupId) {
         return ApiResponse.<String>builder()
                 .result(groupService.deleteGroup(groupId))
+                .build();
+    }
+
+    @PostMapping("/add-user/{groupId}/{userCode}")
+    ApiResponse<Boolean> addUserToGroup(@PathVariable Integer groupId, @PathVariable String userCode) {
+        return ApiResponse.<Boolean>builder()
+                .result(groupService.addUserToGroup(groupId, userCode))
                 .build();
     }
 }

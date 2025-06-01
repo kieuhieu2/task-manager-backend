@@ -1,28 +1,34 @@
 package com.vnua.task_manager.service.implement;
 
+import com.vnua.task_manager.dto.request.taskReq.FileOfTaskRequest;
 import com.vnua.task_manager.dto.request.taskReq.TaskCreationRequest;
 import com.vnua.task_manager.dto.response.taskRes.TaskResponse;
+import com.vnua.task_manager.entity.Group;
 import com.vnua.task_manager.entity.Task;
 import com.vnua.task_manager.entity.User;
 import com.vnua.task_manager.entity.enumsOfEntity.TaskState;
+import com.vnua.task_manager.event.TaskCreatedEvent;
 import com.vnua.task_manager.mapper.TaskMapper;
 import com.vnua.task_manager.repository.TaskRepository;
 import com.vnua.task_manager.repository.UserRepository;
 import com.vnua.task_manager.service.TaskService;
 import com.vnua.task_manager.service.factories.TaskFactory;
+import com.vnua.task_manager.utils.FileUtils;
+import com.vnua.task_manager.utils.StringCustomUtils;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import lombok.experimental.FieldDefaults;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import com.vnua.task_manager.utils.FileUtils;
 
 @Service
 @AllArgsConstructor
@@ -33,6 +39,7 @@ public class TaskServiceImpl implements TaskService {
     TaskRepository taskRepository;
     TaskMapper taskMapper;
     UserRepository userRepository;
+    ApplicationEventPublisher applicationEventPublisher;
 
     @Value("${file.upload-dir:FileOfGroup/}")
     String UPLOAD_DIR = "FileOfGroup/";
@@ -40,12 +47,17 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public String createTask(TaskCreationRequest request) {
         try {
-            taskRepository.save(taskFactory.createTask(request));
+            Task task = taskFactory.createTask(request);
+            taskRepository.save(task);
+
+            String message = "User " + task.getWhoCreated().getUsername() + " created a new task: " + task.getTitle()
+                    + " at " + task.getCreatedAt();
+            applicationEventPublisher.publishEvent(new TaskCreatedEvent(this, message, request.getGroupId()));
         } catch (IOException e) {
             throw new RuntimeException("Error while saving task: " + e.getMessage());
         }
 
-        return "thanh cong";
+        return "successfully created task";
     }
 
     @Override
@@ -59,15 +71,7 @@ public class TaskServiceImpl implements TaskService {
         Task task = taskRepository.findByTaskId(taskId)
                 .orElseThrow(() -> new IllegalArgumentException("Task not found: " + taskId));
 
-        if (task.getFilePathOfTask() == null) {
-            return null;
-        }
-
         File file = new File(task.getFilePathOfTask());
-//        if (!file.getAbsolutePath().startsWith(UPLOAD_DIR)) {
-//            throw new SecurityException("Invalid file path: " + task.getFilePathOfTask());
-//        }
-
         if (!file.exists() || !file.isFile()) {
             throw new IllegalStateException("File not found or invalid: " + task.getFilePathOfTask());
         }
@@ -97,4 +101,72 @@ public class TaskServiceImpl implements TaskService {
         taskRepository.save(task);
         return "Update task status successfully";
     }
+
+    @Override
+    public Boolean deleteTask(Integer taskId) {
+        Task task = taskRepository.findByTaskId(taskId)
+                .orElseThrow(() -> new IllegalArgumentException("Task not found: " + taskId));
+
+        String filePath = task.getFilePathOfTask();
+
+        try {
+                if (filePath != null && !filePath.isEmpty()) {
+                    File file = new File(filePath);
+                    if (file.exists()) {
+                        if (!file.delete()) {
+                            System.err.println("An error occurred during the file deletion process. : " + filePath);
+                        }
+                    } else {
+                        System.err.println("File does not exits: " + filePath);
+                    }
+                }
+            taskRepository.delete(task);
+            return true;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Boolean deleteFileOfTask(Integer taskId) {
+        Task task = taskRepository.findByTaskId(taskId)
+                .orElseThrow(() -> new IllegalArgumentException("Task not found: " + taskId));
+
+        String filePath = task.getFilePathOfTask();
+
+        if (filePath != null && !filePath.isEmpty()) {
+            File file = new File(filePath);
+            if (file.exists()) {
+                if (!file.delete()) {
+                    System.err.println("An error occurred during the file deletion process. : " + filePath);
+                }
+            } else {
+                System.err.println("File does not exits: " + filePath);
+            }
+            task.setFilePathOfTask(null);
+            taskRepository.save(task);
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public Boolean addFileToTask(Integer taskId, FileOfTaskRequest request) {
+        Task task = taskRepository.findByTaskId(taskId)
+                .orElseThrow(() -> new IllegalArgumentException("Task not found: " + taskId));
+        Group group = task.getGroup();
+
+        try {
+            String nameOfGroup = StringCustomUtils.convertToSnakeCase(group.getNameOfGroup());
+            String path = "FileOfGroup/" + nameOfGroup;
+            String filePathSaved = FileUtils.saveFileToPath(path, request.getFileOfTask());
+            task.setFilePathOfTask(filePathSaved);
+            taskRepository.save(task);
+            return true;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

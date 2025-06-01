@@ -1,10 +1,7 @@
 package com.vnua.task_manager.entity;
 
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import jakarta.persistence.*;
 
@@ -34,6 +31,12 @@ public class User {
     LocalDate dob;
     String lastName;
 
+    @ManyToMany(mappedBy = "assigneesUser")
+    List<PrivateTaskOfGroup> assignedPrivateTasks = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<UserNotification> userNotifications = new HashSet<>();
+
     @ManyToMany
     @JoinTable(
             name = "user_roles",
@@ -62,7 +65,10 @@ public class User {
     List<Task> createdTasks;
 
     @OneToMany(mappedBy = "assignee", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Task> tasksAssigned = new HashSet<>();
+    Set<Task> tasksAssigned = new HashSet<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    List<Comment> comments = new ArrayList<>();
 
     Integer taskProgress;
     Date createdAt;

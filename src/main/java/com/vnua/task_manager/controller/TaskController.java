@@ -1,6 +1,7 @@
 package com.vnua.task_manager.controller;
 
 import com.vnua.task_manager.dto.ApiResponse;
+import com.vnua.task_manager.dto.request.taskReq.FileOfTaskRequest;
 import com.vnua.task_manager.dto.request.taskReq.TaskCreationRequest;
 import com.vnua.task_manager.dto.response.taskRes.TaskResponse;
 import com.vnua.task_manager.entity.enumsOfEntity.TaskState;
@@ -40,32 +41,41 @@ public class TaskController {
 
     @GetMapping("/file/{taskId}")
     public ResponseEntity<Resource> getFileByTaskId(@PathVariable Integer taskId) {
-        try {
-            Resource fileResource = taskService.getFileByTaskId(taskId);
-
-            if (fileResource == null) {
-                return ResponseEntity.noContent().build(); // HTTP 204 nếu không có file
-            }
-
-            String fileName = fileResource.getFile().getName(); // Lấy tên file từ FileSystemResource
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
-                    .body(fileResource);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.notFound().build(); // HTTP 404 nếu task không tồn tại
-        } catch (IllegalStateException e) {
-            return ResponseEntity.notFound().build(); // HTTP 404 nếu file không tồn tại
-        } catch (SecurityException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // HTTP 403 nếu đường dẫn không hợp lệ
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        Resource fileResource = taskService.getFileByTaskId(taskId);
+        if (fileResource == null) {
+            return ResponseEntity.noContent().build();
         }
+        String fileName = fileResource.getFilename();
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
+                .body(fileResource);
     }
 
     @PutMapping("update-state/{taskId}/{newState}")
     public ApiResponse<String> updateStatusOfTask(@PathVariable Integer taskId, @PathVariable TaskState newState) {
         return ApiResponse.<String>builder()
                 .result(taskService.updateStatusOfTask(taskId, newState))
+                .build();
+    }
+
+    @DeleteMapping("/{taskId}")
+    public ApiResponse<Boolean> deleteTask(@PathVariable Integer taskId) {
+        return ApiResponse.<Boolean>builder()
+                .result(taskService.deleteTask(taskId))
+                .build();
+    }
+
+    @DeleteMapping("/file/{taskId}")
+    public ApiResponse<Boolean> deleteFile(@PathVariable Integer taskId) {
+        return ApiResponse.<Boolean>builder()
+                .result(taskService.deleteFileOfTask(taskId))
+                .build();
+    }
+
+    @PostMapping("/file/{taskId}")
+    public ApiResponse<Boolean> addFileToTask(@PathVariable Integer taskId, @ModelAttribute FileOfTaskRequest request) {
+        return ApiResponse.<Boolean>builder()
+                .result(taskService.addFileToTask(taskId, request))
                 .build();
     }
 }
