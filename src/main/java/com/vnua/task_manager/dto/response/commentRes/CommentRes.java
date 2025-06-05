@@ -12,5 +12,4 @@ public class CommentRes {
     Integer commentId;
     String commentText;
     String userName;
-    Integer taskId;
 }

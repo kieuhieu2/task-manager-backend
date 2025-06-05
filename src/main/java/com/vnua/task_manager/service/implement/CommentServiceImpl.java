@@ -54,7 +54,6 @@ public class CommentServiceImpl implements CommentService {
                         .commentId(comment.getCommentId())
                         .commentText(comment.getCommentText())
                         .userName(comment.getUser() != null ? comment.getUser().getUsername() : null)
-                        .taskId(comment.getTask().getTaskId())
                         .build())
                 .collect(Collectors.toList());
     }
