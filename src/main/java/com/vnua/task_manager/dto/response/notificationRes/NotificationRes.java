@@ -16,4 +16,5 @@ public class NotificationRes {
     Long notificationId;
     String message;
     LocalDateTime createdAt;
+    Boolean wasRead;
 }

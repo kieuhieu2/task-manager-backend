@@ -133,6 +133,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .expirationTime(new Date(
                         Instant.now().plus(VALID_DURATION, ChronoUnit.SECONDS).toEpochMilli()))
                 .jwtID(UUID.randomUUID().toString())
+                .claim("username", user.getUsername())
                 .claim("scope", buildScope(user))
                 .build();
 

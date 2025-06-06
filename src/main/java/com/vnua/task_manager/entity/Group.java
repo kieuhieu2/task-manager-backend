@@ -37,9 +37,11 @@ public class Group {
     @Column(unique = true, nullable = false)
     String nameOfGroup;
 
+    @Column(name = "description_of_group", columnDefinition = "TEXT")
+    String descriptionOfGroup;
+
     String faculty;
     String department;
-    String descriptionOfGroup;
     String pathOfGroupFolder;
     Date createdAt;
     Date updatedAt;

@@ -26,6 +26,6 @@ public class Notification {
     private Set<UserNotification> userNotifications = new HashSet<>();
 
     String message;
-    Boolean isRead = false;
+    Boolean wasRead = false;
     LocalDateTime createdAt = LocalDateTime.now();
 }

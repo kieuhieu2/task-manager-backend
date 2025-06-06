@@ -43,7 +43,7 @@ public class TaskListener {
             UserNotification userNotification = new UserNotification();
             userNotification.setUser(user);
             userNotification.setNotification(notification);
-            userNotification.setIsRead(false);
+            userNotification.setWasRead(false);
 
             userNotificationRepository.save(userNotification);
         }

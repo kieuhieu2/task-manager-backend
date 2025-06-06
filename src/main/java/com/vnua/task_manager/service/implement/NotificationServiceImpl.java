@@ -25,7 +25,6 @@ import java.util.List;
 public class NotificationServiceImpl implements NotificationService {
     UserRepository userRepository;
     NotificationMapper notificationMapper;
-    NotificationRepository notificationRepository;
     UserNotificationRepository userNotificationRepository;
 
     @Override
@@ -36,7 +35,7 @@ public class NotificationServiceImpl implements NotificationService {
         List<UserNotification> userNotifications = userNotificationRepository.findByUser(user);
 
         List<Notification> unreadNotifications = userNotifications.stream()
-                .filter(un -> !Boolean.TRUE.equals(un.getIsRead()))
+                .filter(un -> !Boolean.TRUE.equals(un.getWasRead()))
                 .map(UserNotification::getNotification)
                 .toList();
 
@@ -54,7 +53,7 @@ public class NotificationServiceImpl implements NotificationService {
                 .findByUser_UserIdAndNotification_NotificationIdIn(user.getUserId(), notificationIds);
 
         for (UserNotification userNotification : userNotifications) {
-            userNotification.setIsRead(true);
+            userNotification.setWasRead(true);
         }
 
         userNotificationRepository.saveAll(userNotifications);

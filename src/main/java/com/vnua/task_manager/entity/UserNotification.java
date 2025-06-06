@@ -24,5 +24,5 @@ public class UserNotification implements Serializable {
     @JoinColumn(name = "notification_id")
     private Notification notification;
 
-    private Boolean isRead = false;
+    private Boolean wasRead = false;
 }

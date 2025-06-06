@@ -54,6 +54,7 @@ public class CommentServiceImpl implements CommentService {
                         .commentId(comment.getCommentId())
                         .commentText(comment.getCommentText())
                         .userName(comment.getUser() != null ? comment.getUser().getUsername() : null)
+                        .userCode(comment.getUser().getCode())
                         .build())
                 .collect(Collectors.toList());
     }

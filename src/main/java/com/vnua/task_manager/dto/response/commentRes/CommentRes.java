@@ -12,4 +12,5 @@ public class CommentRes {
     Integer commentId;
     String commentText;
     String userName;
+    String userCode;
 }

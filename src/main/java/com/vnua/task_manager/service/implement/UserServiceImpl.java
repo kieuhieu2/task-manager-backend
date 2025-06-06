@@ -81,16 +81,12 @@ public class UserServiceImpl implements UserService {
         return userMapper.toUserResponse(user);
     }
 
-    @PostAuthorize("returnObject.username == authentication.name")
-    public UserResponse updateUser(String userId, UserUpdateRequest request) {
-        User user = userRepository.findById(userId)
+    @PostAuthorize("returnObject.code == authentication.name")
+    public UserResponse updateUser(String userCode, UserUpdateRequest request) {
+        User user = userRepository.findByCode(userCode)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         userMapper.updateUser(user, request);
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-
-        var roles = roleRepository.findAllById(request.getRoles());
-        user.setRoles(new HashSet<>(roles));
 
         return userMapper.toUserResponse(userRepository.save(user));
     }
