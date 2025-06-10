@@ -4,6 +4,7 @@ import com.vnua.task_manager.dto.request.taskReq.TaskCreationRequest;
 import com.vnua.task_manager.dto.response.taskRes.TaskResponse;
 import com.vnua.task_manager.entity.PrivateTaskOfGroup;
 import com.vnua.task_manager.entity.Task;
+import com.vnua.task_manager.entity.enumsOfEntity.TaskState;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -17,14 +18,14 @@ public interface TaskMapper {
     @Mapping(target = "percentDone", source = "percentDone")
     Task toTask(TaskCreationRequest request);
 
-    @Mapping(target = "taskId", source = "taskId")
-    @Mapping(target = "title", source = "title")
-    @Mapping(target = "description", source = "description")
-    @Mapping(target = "percentDone", source = "percentDone")
-    @Mapping(target = "userId", source = "whoCreated.userId")
-    @Mapping(target = "groupId", source = "group.groupId")
-    @Mapping(target = "state", source = "state")
-    TaskResponse toTaskResponse(Task task);
+    @Mapping(target = "taskId", source = "task.taskId")
+    @Mapping(target = "title", source = "task.title")
+    @Mapping(target = "description", source = "task.description")
+    @Mapping(target = "percentDone", source = "task.percentDone")
+    @Mapping(target = "userId", source = "task.whoCreated.userId")
+    @Mapping(target = "groupId", source = "task.group.groupId")
+    @Mapping(target = "state", source = "userState")
+    TaskResponse toTaskResponse(Task task, TaskState userState);
 
     @Mapping(target = "taskId", source = "taskId")
     @Mapping(target = "title", source = "title")

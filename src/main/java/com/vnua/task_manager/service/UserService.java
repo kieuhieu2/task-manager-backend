@@ -7,10 +7,11 @@ import com.vnua.task_manager.dto.response.userRes.UserResponse;
 import java.util.List;
 
 public interface UserService {
-    public UserResponse createUser(UserCreationRequest request);
-    public UserResponse getMyInfo();
-    public UserResponse updateUser(String userId, UserUpdateRequest request);
-    public List<UserResponse> getUsers();
-    public void deleteUser(String userId);
-    public UserResponse getUser(String id);
+    UserResponse createUser(UserCreationRequest request);
+    UserResponse getMyInfo();
+    UserResponse updateUser(String userId, UserUpdateRequest request);
+    List<UserResponse> getUsers();
+    void deleteUser(String userId);
+    UserResponse getUserByUserCode(String userCode);
+    String getFullNameByUserCode(String userCode);
 }

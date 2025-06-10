@@ -39,10 +39,17 @@ public class UserController {
                 .build();
     }
 
-    @GetMapping("/{userId}")
-    ApiResponse<UserResponse> getUser(@PathVariable("userId") String userId) {
+    @GetMapping("/{userCode}")
+    ApiResponse<UserResponse> getUserByUserCode(@PathVariable("userCode") String userCode) {
         return ApiResponse.<UserResponse>builder()
-                .result(userServiceImpl.getUser(userId))
+                .result(userServiceImpl.getUserByUserCode(userCode))
+                .build();
+    }
+
+    @GetMapping("/find-full-name/{userCode}")
+    ApiResponse<String> getFullNameByUserCode(@PathVariable("userCode") String userCode) {
+        return ApiResponse.<String>builder()
+                .result(userServiceImpl.getFullNameByUserCode(userCode))
                 .build();
     }
 

@@ -1,11 +1,11 @@
 package com.vnua.task_manager.dto.response.taskRes;
 
 import com.vnua.task_manager.entity.enumsOfEntity.TaskState;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)

@@ -102,9 +102,18 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll().stream().map(userMapper::toUserResponse).toList();
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    public UserResponse getUser(String id) {
+    public UserResponse getUserByUserCode(String userCode) {
         return userMapper.toUserResponse(
-                userRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED)));
+                userRepository.findByCode(userCode).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED)));
+    }
+
+    @Override
+    public String getFullNameByUserCode(String userCode) {
+        String fullname = userRepository.findFullNameByUserCode(userCode);
+        if (fullname == null) {
+            return new AppException(ErrorCode.USER_NOT_EXISTED).getMessage();
+        }
+        
+        return fullname;
     }
 }

@@ -3,14 +3,13 @@ package com.vnua.task_manager.service.implement;
 import com.vnua.task_manager.dto.request.taskReq.FileOfTaskRequest;
 import com.vnua.task_manager.dto.request.taskReq.TaskCreationRequest;
 import com.vnua.task_manager.dto.response.taskRes.TaskResponse;
-import com.vnua.task_manager.entity.Group;
-import com.vnua.task_manager.entity.Task;
-import com.vnua.task_manager.entity.User;
+import com.vnua.task_manager.entity.*;
 import com.vnua.task_manager.entity.enumsOfEntity.TaskState;
 import com.vnua.task_manager.event.TaskCreatedEvent;
 import com.vnua.task_manager.mapper.TaskMapper;
 import com.vnua.task_manager.repository.TaskRepository;
 import com.vnua.task_manager.repository.UserRepository;
+import com.vnua.task_manager.repository.UserTaskStatusRepository;
 import com.vnua.task_manager.service.TaskService;
 import com.vnua.task_manager.service.factories.TaskFactory;
 import com.vnua.task_manager.utils.FileUtils;
@@ -27,7 +26,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import com.vnua.task_manager.utils.FileUtils;
 
 @Service
@@ -40,6 +44,7 @@ public class TaskServiceImpl implements TaskService {
     TaskMapper taskMapper;
     UserRepository userRepository;
     ApplicationEventPublisher applicationEventPublisher;
+    UserTaskStatusRepository userTaskStatusRepository;
 
     @Value("${file.upload-dir:FileOfGroup/}")
     String UPLOAD_DIR = "FileOfGroup/";
@@ -49,6 +54,21 @@ public class TaskServiceImpl implements TaskService {
         try {
             Task task = taskFactory.createTask(request);
             taskRepository.save(task);
+
+            Group group = task.getGroup();
+            Set<User> usersInGroup = group.getMembers();
+
+            for (User user : usersInGroup) {
+                UserTaskStatus status = new UserTaskStatus();
+                status.setId(new UserTaskId(user.getUserId(), task.getTaskId()));
+                status.setUser(user);
+                status.setTask(task);
+                status.setState(TaskState.TODO);
+                status.setPercentDone(0);
+                status.setUpdatedAt(new Date());
+
+                userTaskStatusRepository.save(status);
+            }
 
             String message = "User " + task.getWhoCreated().getUsername() + " created a new task: " + task.getTitle()
                     + " at " + task.getCreatedAt();
@@ -60,11 +80,35 @@ public class TaskServiceImpl implements TaskService {
         return "successfully created task";
     }
 
+//    @Override
+//    public List<TaskResponse> getTaskByGroupId(Integer groupId) {
+//        List<Task> tasks = taskRepository.findByGroup_GroupId(groupId);
+//        return taskMapper.toListTaskResponse(tasks);
+//    }
+
     @Override
     public List<TaskResponse> getTaskByGroupId(Integer groupId) {
+        String userCode = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByCode(userCode)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
         List<Task> tasks = taskRepository.findByGroup_GroupId(groupId);
-        return taskMapper.toListTaskResponse(tasks);
+
+        List<UserTaskStatus> userStatuses = userTaskStatusRepository.findAllByUser_UserIdAndTask_Group_GroupId(user.getUserId(), groupId);
+        Map<Integer, TaskState> taskIdToStateMap = userStatuses.stream()
+                .collect(Collectors.toMap(
+                        uts -> uts.getTask().getTaskId(),
+                        UserTaskStatus::getState
+                ));
+
+        return tasks.stream()
+                .map(task -> {
+                    TaskState userState = taskIdToStateMap.getOrDefault(task.getTaskId(), TaskState.TODO);
+                    return taskMapper.toTaskResponse(task, userState);
+                })
+                .collect(Collectors.toList());
     }
+
 
     @Override
     public Resource getFileByTaskId(Integer taskId) {
@@ -89,16 +133,21 @@ public class TaskServiceImpl implements TaskService {
         Task task = taskRepository.findByTaskId(taskId)
                 .orElseThrow(() -> new IllegalArgumentException("Task not found: " + taskId));
 
-        if (newState == TaskState.TODO) {
-            task.setAssignee(null);
-        }
-        else if (task.getAssignee() == null) {
-            task.setAssignee(user);
+        UserTaskId taskIdKey = new UserTaskId(user.getUserId(), task.getTaskId());
+
+        UserTaskStatus statusOfTask = userTaskStatusRepository.findById(taskIdKey)
+                .orElseThrow(() -> new IllegalArgumentException("No task assignment for user and task"));
+
+        statusOfTask.setState(newState);
+        statusOfTask.setUpdatedAt(new java.util.Date());
+
+        if (newState == TaskState.DONE) {
+            statusOfTask.setPercentDone(100);
+        } else if (newState == TaskState.TODO) {
+            statusOfTask.setPercentDone(0);
         }
 
-        task.setState(newState);
-        task.setUpdatedAt(new java.util.Date());
-        taskRepository.save(task);
+        userTaskStatusRepository.save(statusOfTask);
         return "Update task status successfully";
     }
 
