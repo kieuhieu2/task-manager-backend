@@ -5,6 +5,7 @@ import com.vnua.task_manager.dto.request.groupReq.GroupCreateReq;
 import com.vnua.task_manager.dto.request.groupReq.GroupUpdateReq;
 import com.vnua.task_manager.dto.response.groupRes.GroupCreateRes;
 import com.vnua.task_manager.dto.response.groupRes.GroupGetRes;
+import com.vnua.task_manager.dto.response.groupRes.GroupMemberRes;
 import com.vnua.task_manager.dto.response.groupRes.GroupUpdateRes;
 import com.vnua.task_manager.service.GroupService;
 import jakarta.validation.Valid;
@@ -65,6 +66,20 @@ public class GroupController {
     ApiResponse<Boolean> addUserToGroup(@PathVariable Integer groupId, @PathVariable String userCode) {
         return ApiResponse.<Boolean>builder()
                 .result(groupService.addUserToGroup(groupId, userCode))
+                .build();
+    }
+    
+    @DeleteMapping("/remove-user/{groupId}/{userCode}")
+    ApiResponse<Boolean> removeUserFromGroup(@PathVariable Integer groupId, @PathVariable String userCode) {
+        return ApiResponse.<Boolean>builder()
+                .result(groupService.removeUserFromGroup(groupId, userCode))
+                .build();
+    }
+    
+    @GetMapping("/get-member/{groupId}")
+    ApiResponse<List<GroupMemberRes>> getGroupMembers(@PathVariable Integer groupId) {
+        return ApiResponse.<List<GroupMemberRes>>builder()
+                .result(groupService.getGroupMembers(groupId))
                 .build();
     }
 }

@@ -8,7 +8,6 @@ import com.vnua.task_manager.entity.UserNotification;
 import com.vnua.task_manager.exception.AppException;
 import com.vnua.task_manager.exception.ErrorCode;
 import com.vnua.task_manager.mapper.NotificationMapper;
-import com.vnua.task_manager.repository.NotificationRepository;
 import com.vnua.task_manager.repository.UserNotificationRepository;
 import com.vnua.task_manager.repository.UserRepository;
 import com.vnua.task_manager.service.NotificationService;

@@ -34,7 +34,7 @@ public class Group {
     @OneToMany(mappedBy = "group",cascade = CascadeType.ALL)
     Set<Task> tasks = new HashSet<>();
 
-    @Column(unique = true, nullable = false)
+    @Column(name = "name_of_group", unique = true, nullable = false)
     String nameOfGroup;
 
     @Column(name = "description_of_group", columnDefinition = "TEXT")

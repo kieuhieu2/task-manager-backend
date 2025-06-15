@@ -2,6 +2,7 @@ package com.vnua.task_manager.service.implement;
 
 import com.vnua.task_manager.dto.request.taskReq.FileOfTaskRequest;
 import com.vnua.task_manager.dto.request.taskReq.TaskCreationRequest;
+import com.vnua.task_manager.dto.response.taskRes.MemberWorkProgressResponse;
 import com.vnua.task_manager.dto.response.taskRes.TaskResponse;
 import com.vnua.task_manager.entity.*;
 import com.vnua.task_manager.entity.enumsOfEntity.TaskState;
@@ -17,7 +18,6 @@ import com.vnua.task_manager.utils.StringCustomUtils;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import lombok.experimental.FieldDefaults;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.io.FileSystemResource;
@@ -31,8 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import com.vnua.task_manager.utils.FileUtils;
+import java.util.ArrayList;
 
 @Service
 @AllArgsConstructor
@@ -45,9 +44,6 @@ public class TaskServiceImpl implements TaskService {
     UserRepository userRepository;
     ApplicationEventPublisher applicationEventPublisher;
     UserTaskStatusRepository userTaskStatusRepository;
-
-    @Value("${file.upload-dir:FileOfGroup/}")
-    String UPLOAD_DIR = "FileOfGroup/";
 
     @Override
     public String createTask(TaskCreationRequest request) {
@@ -80,12 +76,6 @@ public class TaskServiceImpl implements TaskService {
         return "successfully created task";
     }
 
-//    @Override
-//    public List<TaskResponse> getTaskByGroupId(Integer groupId) {
-//        List<Task> tasks = taskRepository.findByGroup_GroupId(groupId);
-//        return taskMapper.toListTaskResponse(tasks);
-//    }
-
     @Override
     public List<TaskResponse> getTaskByGroupId(Integer groupId) {
         String userCode = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -104,7 +94,8 @@ public class TaskServiceImpl implements TaskService {
         return tasks.stream()
                 .map(task -> {
                     TaskState userState = taskIdToStateMap.getOrDefault(task.getTaskId(), TaskState.TODO);
-                    return taskMapper.toTaskResponse(task, userState);
+                    Boolean isCreator = user.getUserId().equals(task.getWhoCreated().getUserId());
+                    return taskMapper.toTaskResponse(task, userState, isCreator);
                 })
                 .collect(Collectors.toList());
     }
@@ -218,4 +209,23 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
+    @Override
+    public List<MemberWorkProgressResponse> getWorkProcessOfMembersInGroup(Integer taskId) {
+        
+        List<UserTaskStatus> statuses = userTaskStatusRepository.findAllByTask_TaskId(taskId);
+        List<MemberWorkProgressResponse> responses = new ArrayList<>();
+        
+        for (UserTaskStatus status : statuses) {
+            User user = status.getUser();
+            MemberWorkProgressResponse response = MemberWorkProgressResponse.builder()
+                    .userCode(user.getCode())
+                    .state(status.getState())
+                    .percentDone(status.getPercentDone())
+                    .updatedAt(status.getUpdatedAt())
+                    .build();
+            responses.add(response);
+        }
+        
+        return responses;
+    }
 }

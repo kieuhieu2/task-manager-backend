@@ -17,4 +17,5 @@ public class TaskResponse {
     String userId;
     Integer groupId;
     TaskState state;
+    Boolean isCreator;
 }

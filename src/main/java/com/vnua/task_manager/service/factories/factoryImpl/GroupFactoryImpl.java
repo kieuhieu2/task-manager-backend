@@ -20,6 +20,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Date;
+import java.util.HashSet;
 
 import static com.vnua.task_manager.utils.StringCustomUtils.convertToSnakeCase;
 
@@ -34,8 +36,22 @@ public class GroupFactoryImpl implements GroupFactory {
 
     @Override
     public Group createGroup(GroupCreateReq request) throws IOException {
+        log.info("Creating group from request: nameOfGroup={}, faculty={}, department={}", 
+                request.getNameOfGroup(), request.getFaculty(), request.getDepartment());
+        
         Group group = groupMapper.toEntity(request, userRepository);
+        
+        log.info("After mapping to entity: group={}, nameOfGroup={}", 
+                group, group != null ? group.getNameOfGroup() : "null");
 
+        // If nameOfGroup is null, use manual mapping
+        if (group == null || group.getNameOfGroup() == null) {
+            log.warn("MapStruct mapping failed or nameOfGroup is null, using manual mapping");
+            group = manuallyCreateGroup(request);
+        }
+
+        final Group finalGroup = group; // Create a final reference for use in lambdas
+        
         var context = SecurityContextHolder.getContext();
         String code = context.getAuthentication().getName();
 
@@ -45,7 +61,7 @@ public class GroupFactoryImpl implements GroupFactory {
                     return new AppException(ErrorCode.USER_NOT_EXISTED);
                 });
 
-        String nameOfGroup = convertToSnakeCase(group.getNameOfGroup());
+        String nameOfGroup = convertToSnakeCase(finalGroup.getNameOfGroup());
         String folderPathOfGroup = "FileOfGroup/" + nameOfGroup;
         File groupFolder = new File(folderPathOfGroup);
 
@@ -56,24 +72,60 @@ public class GroupFactoryImpl implements GroupFactory {
             }
         }
 
-        group.setPathOfGroupFolder(folderPathOfGroup);
+        finalGroup.setPathOfGroupFolder(folderPathOfGroup);
 
-        group.getLeadersOfGroup().add(creator);
-        creator.getGroupLeaders().add(group);
+        finalGroup.getLeadersOfGroup().add(creator);
+        creator.getGroupLeaders().add(finalGroup);
 
         if (request.getLeaderCodes() != null) {
             for (String leaderCode : request.getLeaderCodes()) {
                 User user = userRepository.findByCode(leaderCode)
                         .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-                user.getGroupLeaders().add(group);
-                group.getLeadersOfGroup().add(user);
+                user.getGroupLeaders().add(finalGroup);
+                finalGroup.getLeadersOfGroup().add(user);
             }
         }
 
-        group.getMembers().forEach(user -> {
-            user.getGroups().add(group);
-            log.debug("Added group {} to user {} groups", group.getGroupId(), user.getUserId());
+        finalGroup.getMembers().forEach(user -> {
+            user.getGroups().add(finalGroup);
+            log.debug("Added group {} to user {} groups", finalGroup.getGroupId(), user.getUserId());
         });
+        
+        log.info("Returning group with nameOfGroup={}", finalGroup.getNameOfGroup());
+        return finalGroup;
+    }
+    
+    private Group manuallyCreateGroup(GroupCreateReq request) {
+        log.info("Creating group manually from request");
+        Group group = getGroup(request);
+
+        // Add members if available
+        if (request.getMemberCodes() != null && !request.getMemberCodes().isEmpty()) {
+            final Group finalGroup = group; // Create a final reference for use in lambda
+            for (String memberCode : request.getMemberCodes()) {
+                userRepository.findByCode(memberCode).ifPresent(user -> {
+                    finalGroup.getMembers().add(user);
+                });
+            }
+        }
+        
+        return group;
+    }
+
+    private static Group getGroup(GroupCreateReq request) {
+        Group group = new Group();
+        group.setNameOfGroup(request.getNameOfGroup());
+        group.setFaculty(request.getFaculty());
+        group.setDepartment(request.getDepartment());
+        group.setDescriptionOfGroup(request.getDescriptionOfGroup());
+        group.setCreatedAt(new Date());
+        group.setUpdatedAt(new Date());
+        group.setWasDeleted(false);
+
+        // Initialize collections
+        group.setMembers(new HashSet<>());
+        group.setLeadersOfGroup(new HashSet<>());
+        group.setTasks(new HashSet<>());
         return group;
     }
 
@@ -92,7 +144,7 @@ public class GroupFactoryImpl implements GroupFactory {
         String oldNameOfGroup = group.getNameOfGroup();
         String oldFolderPath = group.getPathOfGroupFolder();
 
-        groupMapper.updateGroup(group, request);
+//        groupMapper.updateGroup(group, request);
 
         if (request.getNameOfGroup() != null && !request.getNameOfGroup().equals(oldNameOfGroup)) {
             String newNameOfGroup = convertToSnakeCase(request.getNameOfGroup());

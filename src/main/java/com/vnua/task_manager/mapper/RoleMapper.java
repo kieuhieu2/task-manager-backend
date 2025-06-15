@@ -10,6 +10,7 @@ import com.vnua.task_manager.entity.Role;
 @Mapper(componentModel = "spring")
 public interface RoleMapper {
     @Mapping(target = "permissions", ignore = true)
+    @Mapping(target = "users", ignore = true)
     Role toRole(RoleRequest request);
 
     RoleResponse toRoleResponse(Role role);

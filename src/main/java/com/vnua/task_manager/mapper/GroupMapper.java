@@ -1,7 +1,7 @@
 package com.vnua.task_manager.mapper;
 
 import com.vnua.task_manager.dto.request.groupReq.GroupCreateReq;
-import com.vnua.task_manager.dto.request.groupReq.GroupUpdateReq;
+//import com.vnua.task_manager.dto.request.groupReq.GroupUpdateReq;
 import com.vnua.task_manager.dto.response.groupRes.GroupCreateRes;
 import com.vnua.task_manager.dto.response.groupRes.GroupGetRes;
 import com.vnua.task_manager.dto.response.groupRes.GroupUpdateRes;
@@ -9,7 +9,6 @@ import com.vnua.task_manager.entity.Group;
 import com.vnua.task_manager.entity.User;
 import com.vnua.task_manager.repository.UserRepository;
 import org.mapstruct.*;
-
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -25,6 +24,11 @@ public interface GroupMapper {
     @Mapping(target = "updatedAt", expression = "java(new java.util.Date())")
     @Mapping(target = "wasDeleted", constant = "false")
     @Mapping(target = "descriptionOfGroup", source = "descriptionOfGroup")
+    @Mapping(target = "faculty", source = "faculty")
+    @Mapping(target = "department", source = "department")
+    @Mapping(target = "nameOfGroup", source = "nameOfGroup")
+    @Mapping(target = "groupId", ignore = true)
+    @Mapping(target = "pathOfGroupFolder", ignore = true)
     Group toEntity(GroupCreateReq request, @Context UserRepository userRepository);
 
     @Named("mapUsersByCodes")
@@ -67,8 +71,24 @@ public interface GroupMapper {
     @Mapping(target = "descriptionOfGroup", source = "descriptionOfGroup")
     List<GroupGetRes> toGroupGetResponse(List<Group> groups);
 
-    @Mapping(target = "groupId", ignore = true)
-    Group updateGroup(@MappingTarget Group group, GroupUpdateReq request);
+    @Mapping(target = "groupId", source = "groupId")
+    @Mapping(target = "nameOfGroup", source = "nameOfGroup")
+    @Mapping(target = "descriptionOfGroup", source = "descriptionOfGroup")
+    @Mapping(target = "isLeader", ignore = true)
+    GroupGetRes toGroupGetRes(Group group);
+
+//    @Mapping(target = "groupId", ignore = true)
+//    @Mapping(target = "members", ignore = true)
+//    @Mapping(target = "leadersOfGroup", ignore = true)
+//    @Mapping(target = "tasks", ignore = true)
+//    @Mapping(target = "faculty", ignore = true)
+//    @Mapping(target = "department", ignore = true)
+//    @Mapping(target = "pathOfGroupFolder", ignore = true)
+//    @Mapping(target = "createdAt", ignore = true)
+//    @Mapping(target = "updatedAt", expression = "java(new java.util.Date())")
+//    @Mapping(target = "wasDeleted", ignore = true)
+//    @Mapping(target = "isLeader", ignore = true)
+//    Group updateGroup(@MappingTarget Group group, GroupUpdateReq request);
 
     @Mapping(target = "groupId", source = "groupId")
     @Mapping(target = "nameOfGroup", source = "nameOfGroup")

@@ -34,6 +34,7 @@ public class Task {
     List<Comment> commentsOfTask = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
+    @Builder.Default
     TaskState state = TaskState.TODO;
 
     @ManyToOne
@@ -43,10 +44,12 @@ public class Task {
     String title;
     String description;
     String filePathOfTask;
+    @Builder.Default
     Integer percentDone = 0;
 
     Date createdAt;
     Date updatedAt;
+    @Builder.Default
     Boolean wasDeleted = false;
 
     @PrePersist

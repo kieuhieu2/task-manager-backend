@@ -23,7 +23,7 @@
 	</properties>
 	<dependencies>
 
-<!--		swangger -->
+		<!--		swangger -->
 		<!-- https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui -->
 		<dependency>
 			<groupId>org.springdoc</groupId>
@@ -57,8 +57,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-crypto -->
-		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-crypto -->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-crypto</artifactId>
@@ -156,11 +154,11 @@
 							<version>${mapstruct.version}</version>
 						</path>
 					</annotationProcessorPaths>
-<!--					<annotationProcessorOptions>-->
-<!--						<option>mapstruct.suppressGeneratorTimestamp=true</option>-->
-<!--						<option>mapstruct.defaultComponentModel=spring</option>-->
-<!--						<option>mapstruct.verbose=true</option>-->
-<!--					</annotationProcessorOptions>-->
+					<!--					<annotationProcessorOptions>-->
+					<!--						<option>mapstruct.suppressGeneratorTimestamp=true</option>-->
+					<!--						<option>mapstruct.defaultComponentModel=spring</option>-->
+					<!--						<option>mapstruct.verbose=true</option>-->
+					<!--					</annotationProcessorOptions>-->
 				</configuration>
 			</plugin>
 			<plugin>
@@ -212,12 +210,12 @@
 					</java>
 				</configuration>
 				<executions>
-<!--					<execution>-->
-<!--						<phase>compile</phase>-->
-<!--						<goals>-->
-<!--							<goal>check</goal>-->
-<!--						</goals>-->
-<!--					</execution>-->
+					<!--					<execution>-->
+					<!--						<phase>compile</phase>-->
+					<!--						<goals>-->
+					<!--							<goal>check</goal>-->
+					<!--						</goals>-->
+					<!--					</execution>-->
 				</executions>
 			</plugin>
 		</plugins>

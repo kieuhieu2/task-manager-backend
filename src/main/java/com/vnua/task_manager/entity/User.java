@@ -68,11 +68,13 @@ public class User {
     Set<Task> tasksAssigned = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @Builder.Default
     List<Comment> comments = new ArrayList<>();
 
     Integer taskProgress;
     Date createdAt;
     Date updatedAt;
+    @Builder.Default
     Boolean wasDeleted = false;
     String pathOfUserFolder;
 }

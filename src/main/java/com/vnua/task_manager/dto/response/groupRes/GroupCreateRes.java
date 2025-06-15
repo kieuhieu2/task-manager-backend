@@ -1,9 +1,6 @@
 package com.vnua.task_manager.dto.response.groupRes;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.util.Date;

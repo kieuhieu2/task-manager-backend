@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface UserTaskStatusRepository extends JpaRepository<UserTaskStatus, UserTaskId> {
     List<UserTaskStatus> findAllByUser_UserIdAndTask_Group_GroupId(String userId, Integer groupId);
+    
+    List<UserTaskStatus> findAllByTask_TaskId(Integer taskId);
 }

@@ -9,6 +9,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public interface TaskMapper {
@@ -16,6 +17,16 @@ public interface TaskMapper {
     @Mapping(target="title", source="title")
     @Mapping(target = "description", source = "description")
     @Mapping(target = "percentDone", source = "percentDone")
+    @Mapping(target = "taskId", ignore = true)
+    @Mapping(target = "group", ignore = true)
+    @Mapping(target = "whoCreated", ignore = true)
+    @Mapping(target = "commentsOfTask", ignore = true)
+    @Mapping(target = "state", ignore = true)
+    @Mapping(target = "assignee", ignore = true)
+    @Mapping(target = "filePathOfTask", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "wasDeleted", ignore = true)
     Task toTask(TaskCreationRequest request);
 
     @Mapping(target = "taskId", source = "task.taskId")
@@ -25,16 +36,25 @@ public interface TaskMapper {
     @Mapping(target = "userId", source = "task.whoCreated.userId")
     @Mapping(target = "groupId", source = "task.group.groupId")
     @Mapping(target = "state", source = "userState")
-    TaskResponse toTaskResponse(Task task, TaskState userState);
+    @Mapping(target = "isCreator", source = "isCreator")
+    TaskResponse toTaskResponse(Task task, TaskState userState, Boolean isCreator);
 
-    @Mapping(target = "taskId", source = "taskId")
-    @Mapping(target = "title", source = "title")
-    @Mapping(target = "description", source = "description")
-    @Mapping(target = "percentDone", source = "percentDone")
-    @Mapping(target = "userId", source = "whoCreated.userId")
-    @Mapping(target = "groupId", source = "group.groupId")
-    @Mapping(target = "state", source = "state")
-    List<TaskResponse> toListTaskResponse(List<Task> tasks);
+//    @Mapping(target = "taskId", source = "taskId")
+//    @Mapping(target = "title", source = "title")
+//    @Mapping(target = "description", source = "description")
+//    @Mapping(target = "percentDone", source = "percentDone")
+//    @Mapping(target = "userId", source = "whoCreated.userId")
+//    @Mapping(target = "groupId", source = "group.groupId")
+//    @Mapping(target = "state", source = "state")
+//    List<TaskResponse> toListTaskResponse(List<Task> tasks);
 
+    @Mapping(target = "privateTaskId", ignore = true)
+    @Mapping(target = "assigneesUser", ignore = true)
     PrivateTaskOfGroup toPrivateTaskOfGroup(Task task);
+
+    default List<TaskResponse> convertTasksToTaskResponses(List<Task> tasks) {
+        return tasks.stream()
+                .map(task -> toTaskResponse(task, TaskState.TODO, false))
+                .collect(Collectors.toList());
+    }
 }

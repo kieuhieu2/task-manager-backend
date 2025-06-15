@@ -14,10 +14,8 @@ import com.vnua.task_manager.service.factories.TaskFactory;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,9 +29,6 @@ public class PrivateTaskServiceImpl implements PrivateTaskService {
     TaskMapper taskMapper;
     ApplicationEventPublisher applicationEventPublisher;
     UserRepository userRepository;
-
-    @Value("${file.upload-dir:FileOfGroup/}")
-    String UPLOAD_DIR = "FileOfGroup/";
 
     @Override
     public Boolean createPrivateTask(TaskCreationRequest request) {

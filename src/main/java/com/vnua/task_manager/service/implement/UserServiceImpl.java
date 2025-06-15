@@ -3,7 +3,6 @@ package com.vnua.task_manager.service.implement;
 import java.io.File;
 import java.util.HashSet;
 import java.util.List;
-
 import com.vnua.task_manager.entity.User;
 import com.vnua.task_manager.service.UserService;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -12,8 +11,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import com.vnua.task_manager.constant.PredefinedRole;
 import com.vnua.task_manager.dto.request.userReq.UserCreationRequest;
 import com.vnua.task_manager.dto.request.userReq.UserUpdateRequest;
 import com.vnua.task_manager.dto.response.userRes.UserResponse;
@@ -23,7 +20,6 @@ import com.vnua.task_manager.exception.ErrorCode;
 import com.vnua.task_manager.mapper.UserMapper;
 import com.vnua.task_manager.repository.RoleRepository;
 import com.vnua.task_manager.repository.UserRepository;
-
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

@@ -3,6 +3,7 @@ package com.vnua.task_manager.controller;
 import com.vnua.task_manager.dto.ApiResponse;
 import com.vnua.task_manager.dto.request.taskReq.FileOfTaskRequest;
 import com.vnua.task_manager.dto.request.taskReq.TaskCreationRequest;
+import com.vnua.task_manager.dto.response.taskRes.MemberWorkProgressResponse;
 import com.vnua.task_manager.dto.response.taskRes.TaskResponse;
 import com.vnua.task_manager.entity.enumsOfEntity.TaskState;
 import com.vnua.task_manager.service.TaskService;
@@ -10,12 +11,9 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.core.io.Resource;
-
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -76,6 +74,13 @@ public class TaskController {
     public ApiResponse<Boolean> addFileToTask(@PathVariable Integer taskId, @ModelAttribute FileOfTaskRequest request) {
         return ApiResponse.<Boolean>builder()
                 .result(taskService.addFileToTask(taskId, request))
+                .build();
+    }
+
+    @GetMapping("/work-progress/{taskId}")
+    public ApiResponse<List<MemberWorkProgressResponse>> getWorkProcessOfMembersInGroup(@PathVariable Integer taskId) {
+        return ApiResponse.<List<MemberWorkProgressResponse>>builder()
+                .result(taskService.getWorkProcessOfMembersInGroup(taskId))
                 .build();
     }
 }

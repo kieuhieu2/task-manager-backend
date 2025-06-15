@@ -5,17 +5,22 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 import java.util.Set;
 
 @Getter
+@Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class GroupCreateReq {
 
-    private Set<String> memberCodes;
-    private Set<String> leaderCodes;
+    Set<String> memberCodes;
+    Set<String> leaderCodes;
 
     @NotBlank(message = "Name of group is required")
     String nameOfGroup;
