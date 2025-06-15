@@ -2,7 +2,7 @@ package com.vnua.task_manager.mapper;
 
 import com.vnua.task_manager.dto.request.taskReq.TaskCreationRequest;
 import com.vnua.task_manager.dto.response.taskRes.TaskResponse;
-import com.vnua.task_manager.entity.PrivateTaskOfGroup;
+
 import com.vnua.task_manager.entity.Task;
 import com.vnua.task_manager.entity.enumsOfEntity.TaskState;
 import org.mapstruct.Mapper;
@@ -17,6 +17,7 @@ public interface TaskMapper {
     @Mapping(target="title", source="title")
     @Mapping(target = "description", source = "description")
     @Mapping(target = "percentDone", source = "percentDone")
+    @Mapping(target = "taskType", source = "taskType")
     @Mapping(target = "taskId", ignore = true)
     @Mapping(target = "group", ignore = true)
     @Mapping(target = "whoCreated", ignore = true)
@@ -36,6 +37,7 @@ public interface TaskMapper {
     @Mapping(target = "userId", source = "task.whoCreated.userId")
     @Mapping(target = "groupId", source = "task.group.groupId")
     @Mapping(target = "state", source = "userState")
+    @Mapping(target = "taskType", source = "task.taskType")
     @Mapping(target = "isCreator", source = "isCreator")
     TaskResponse toTaskResponse(Task task, TaskState userState, Boolean isCreator);
 
@@ -47,10 +49,6 @@ public interface TaskMapper {
 //    @Mapping(target = "groupId", source = "group.groupId")
 //    @Mapping(target = "state", source = "state")
 //    List<TaskResponse> toListTaskResponse(List<Task> tasks);
-
-    @Mapping(target = "privateTaskId", ignore = true)
-    @Mapping(target = "assigneesUser", ignore = true)
-    PrivateTaskOfGroup toPrivateTaskOfGroup(Task task);
 
     default List<TaskResponse> convertTasksToTaskResponses(List<Task> tasks) {
         return tasks.stream()

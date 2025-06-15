@@ -1,5 +1,6 @@
 package com.vnua.task_manager.dto.request.taskReq;
 
+import com.vnua.task_manager.entity.enumsOfEntity.TaskType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -22,6 +23,9 @@ public class TaskCreationRequest implements Serializable {
 
     @NotBlank(message = "Title is required")
     String title;
+
+    @NotNull(message = "Task type is required")
+    TaskType taskType;
 
     String description;
     Integer percentDone;

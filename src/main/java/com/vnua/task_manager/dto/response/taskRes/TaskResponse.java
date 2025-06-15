@@ -1,6 +1,7 @@
 package com.vnua.task_manager.dto.response.taskRes;
 
 import com.vnua.task_manager.entity.enumsOfEntity.TaskState;
+import com.vnua.task_manager.entity.enumsOfEntity.TaskType;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -17,5 +18,6 @@ public class TaskResponse {
     String userId;
     Integer groupId;
     TaskState state;
+    TaskType taskType;
     Boolean isCreator;
 }

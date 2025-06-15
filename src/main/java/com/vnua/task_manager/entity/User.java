@@ -31,9 +31,6 @@ public class User {
     LocalDate dob;
     String lastName;
 
-    @ManyToMany(mappedBy = "assigneesUser")
-    List<PrivateTaskOfGroup> assignedPrivateTasks = new ArrayList<>();
-
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserNotification> userNotifications = new HashSet<>();
 

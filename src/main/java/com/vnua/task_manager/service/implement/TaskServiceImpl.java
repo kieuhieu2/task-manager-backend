@@ -24,6 +24,8 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
@@ -46,24 +48,35 @@ public class TaskServiceImpl implements TaskService {
     UserTaskStatusRepository userTaskStatusRepository;
 
     @Override
+    @Transactional
     public String createTask(TaskCreationRequest request) {
         try {
             Task task = taskFactory.createTask(request);
             taskRepository.save(task);
 
             Group group = task.getGroup();
-            Set<User> usersInGroup = group.getMembers();
+            
+            switch (request.getTaskType()) {
+                case PUBLIC_TASK:
+                    Set<User> usersInGroup = group.getMembers();
+                    for (User user : usersInGroup) {
+                        mapAndSaveTask(task, user);
+                    }
+                    break;
+                    
+                case PRIVATE_TASK:
+                    if (request.getAssigneesUserCode() == null || request.getAssigneesUserCode().isEmpty()) {
+                        throw new IllegalArgumentException("Private tasks require assignees");
+                    }
+                    
+                    for (String userCode : request.getAssigneesUserCode()) {
+                        User user = userRepository.findByCode(userCode)
+                                .orElseThrow(() -> new IllegalArgumentException("User not found with code: " + userCode));
 
-            for (User user : usersInGroup) {
-                UserTaskStatus status = new UserTaskStatus();
-                status.setId(new UserTaskId(user.getUserId(), task.getTaskId()));
-                status.setUser(user);
-                status.setTask(task);
-                status.setState(TaskState.TODO);
-                status.setPercentDone(0);
-                status.setUpdatedAt(new Date());
+                        mapAndSaveTask(task, user);
 
-                userTaskStatusRepository.save(status);
+                    }
+                    break;
             }
 
             String message = "User " + task.getWhoCreated().getUsername() + " created a new task: " + task.getTitle()
@@ -74,6 +87,18 @@ public class TaskServiceImpl implements TaskService {
         }
 
         return "successfully created task";
+    }
+
+    private void mapAndSaveTask(Task task, User user) {
+        UserTaskStatus status = new UserTaskStatus();
+        status.setId(new UserTaskId(user.getUserId(), task.getTaskId()));
+        status.setUser(user);
+        status.setTask(task);
+        status.setState(TaskState.TODO);
+        status.setPercentDone(0);
+        status.setUpdatedAt(new Date());
+        userTaskStatusRepository.save(status);
+
     }
 
     @Override

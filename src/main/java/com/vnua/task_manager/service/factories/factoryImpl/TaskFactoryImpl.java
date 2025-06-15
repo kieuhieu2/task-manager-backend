@@ -1,15 +1,12 @@
 package com.vnua.task_manager.service.factories.factoryImpl;
 
-import com.vnua.task_manager.dto.request.taskReq.PrivateTaskReq;
 import com.vnua.task_manager.dto.request.taskReq.TaskCreationRequest;
 import com.vnua.task_manager.entity.Group;
-import com.vnua.task_manager.entity.PrivateTaskOfGroup;
 import com.vnua.task_manager.entity.Task;
 import com.vnua.task_manager.entity.User;
 import com.vnua.task_manager.entity.enumsOfEntity.TaskState;
 import com.vnua.task_manager.mapper.TaskMapper;
 import com.vnua.task_manager.repository.GroupRepository;
-import com.vnua.task_manager.repository.PrivateTaskOfGroupRepository;
 import com.vnua.task_manager.repository.UserRepository;
 import com.vnua.task_manager.service.factories.TaskFactory;
 import com.vnua.task_manager.utils.FileUtils;
@@ -28,7 +25,6 @@ public class TaskFactoryImpl implements TaskFactory {
      TaskMapper taskMapper;
      UserRepository userRepository;
      GroupRepository groupRepository;
-     PrivateTaskOfGroupRepository privateTaskOfGroupRepository;
 
     @Override
     public Task createTask(TaskCreationRequest request) throws IOException {

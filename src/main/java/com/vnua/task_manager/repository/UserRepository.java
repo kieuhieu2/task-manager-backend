@@ -12,12 +12,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, String> {
-    boolean existsByUsername(String username);
     Optional<User> findByCode(String code);
     Optional<User> findByUsername(String username);
     List<User> findByCodeIn(Collection<String> codes);
-
-    Optional<User> findByUserId(String userId);
 
     @Query("SELECT CONCAT(COALESCE(u.firstName, ''), ' ', COALESCE(u.lastName, '')) FROM User u WHERE u.code = :code")
     String findFullNameByUserCode(@Param("code") String code);

@@ -1,10 +1,8 @@
 package com.vnua.task_manager.entity;
 
 import jakarta.persistence.*;
-
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
 import java.util.Date;
 
 @Getter
@@ -18,10 +16,6 @@ public class Comment {
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     Integer commentId;
-
-    @ManyToOne
-    @JoinColumn(name = "private_task_id")
-    PrivateTaskOfGroup privateTask;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "task_id", nullable = false)

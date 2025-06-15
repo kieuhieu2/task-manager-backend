@@ -1,6 +1,7 @@
 package com.vnua.task_manager.entity;
 
 import com.vnua.task_manager.entity.enumsOfEntity.TaskState;
+import com.vnua.task_manager.entity.enumsOfEntity.TaskType;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -36,6 +37,10 @@ public class Task {
     @Enumerated(EnumType.STRING)
     @Builder.Default
     TaskState state = TaskState.TODO;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    TaskType taskType;
 
     @ManyToOne
     @JoinColumn(name = "assignee_id")
