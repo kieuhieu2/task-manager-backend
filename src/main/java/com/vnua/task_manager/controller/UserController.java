@@ -5,8 +5,10 @@ import java.util.List;
 import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
 
 import com.vnua.task_manager.dto.ApiResponse;
+import com.vnua.task_manager.dto.PageOfUserResponse;
 import com.vnua.task_manager.dto.request.userReq.UserCreationRequest;
 import com.vnua.task_manager.dto.request.userReq.UserUpdateRequest;
 import com.vnua.task_manager.dto.response.userRes.UserResponse;
@@ -33,7 +35,28 @@ public class UserController {
     }
 
     @GetMapping
-    ApiResponse<List<UserResponse>> getUsers() {
+    ApiResponse<PageOfUserResponse<UserResponse>> getUsers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Page<UserResponse> userPage = userServiceImpl.getUsersWithPagination(page, size);
+        
+        PageOfUserResponse<UserResponse> pageResponse = PageOfUserResponse.<UserResponse>builder()
+                .content(userPage.getContent())
+                .currentPage(userPage.getNumber())
+                .pageSize(userPage.getSize())
+                .totalPages(userPage.getTotalPages())
+                .totalElements(userPage.getTotalElements())
+                .hasNext(userPage.hasNext())
+                .hasPrevious(userPage.hasPrevious())
+                .build();
+                
+        return ApiResponse.<PageOfUserResponse<UserResponse>>builder()
+                .result(pageResponse)
+                .build();
+    }
+
+    @GetMapping("/all")
+    ApiResponse<List<UserResponse>> getAllUsers() {
         return ApiResponse.<List<UserResponse>>builder()
                 .result(userServiceImpl.getUsers())
                 .build();
