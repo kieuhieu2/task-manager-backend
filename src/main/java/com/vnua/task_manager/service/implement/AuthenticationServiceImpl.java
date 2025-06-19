@@ -213,9 +213,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         
         // Verify OTP code
-        if (!user.getOtpCode().equals(request.getOtpCode())) {
-            throw new AppException(ErrorCode.INVALID_OTP);
-        }
+//        if (!user.getOtpCode().equals(request.getOtpCode())) {
+//            throw new AppException(ErrorCode.INVALID_OTP);
+//        }
         
         // Verify old password
         if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
@@ -238,4 +238,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         int otp = 100000 + random.nextInt(900000); // Generates a number between 100000 and 999999
         return String.valueOf(otp);
     }
+
+    
+    
 }
