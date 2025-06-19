@@ -2,9 +2,7 @@ package com.vnua.task_manager.entity;
 
 import java.time.LocalDate;
 import java.util.*;
-
 import jakarta.persistence.*;
-
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -30,6 +28,8 @@ public class User {
     String firstName;
     LocalDate dob;
     String lastName;
+    
+    String otpCode;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserNotification> userNotifications = new HashSet<>();

@@ -6,6 +6,8 @@ import com.vnua.task_manager.dto.ApiResponse;
 import com.vnua.task_manager.dto.request.authReq.AuthenticationRequest;
 import com.vnua.task_manager.dto.request.authReq.IntrospectRequest;
 import com.vnua.task_manager.dto.request.authReq.LogoutRequest;
+import com.vnua.task_manager.dto.request.authReq.PasswordChangeRequest;
+import com.vnua.task_manager.dto.request.authReq.PasswordResetRequest;
 import com.vnua.task_manager.dto.request.authReq.RefreshRequest;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -51,6 +53,18 @@ public class AuthenticationController {
     @PostMapping("/logout")
     ApiResponse<Void> logout(@RequestBody LogoutRequest request) throws ParseException, JOSEException {
         authenticationServiceImpl.logout(request);
+        return ApiResponse.<Void>builder().build();
+    }
+    
+    @PostMapping("/password-reset-request")
+    ApiResponse<Boolean> requestPasswordReset(@RequestBody PasswordResetRequest request) {
+        Boolean result = authenticationServiceImpl.requestPasswordReset(request);
+        return ApiResponse.<Boolean>builder().result(result).build();
+    }
+    
+    @PostMapping("/password-change")
+    ApiResponse<Void> changePassword(@RequestBody PasswordChangeRequest request) {
+        authenticationServiceImpl.changePassword(request);
         return ApiResponse.<Void>builder().build();
     }
 }

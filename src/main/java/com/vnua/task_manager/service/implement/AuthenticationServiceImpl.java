@@ -4,9 +4,9 @@ import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.Random;
 import java.util.StringJoiner;
 import java.util.UUID;
-
 import com.vnua.task_manager.entity.User;
 import com.vnua.task_manager.service.AuthenticationService;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,7 +14,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
@@ -24,6 +23,8 @@ import com.vnua.task_manager.dto.request.authReq.AuthenticationRequest;
 import com.vnua.task_manager.dto.request.authReq.IntrospectRequest;
 import com.vnua.task_manager.dto.request.authReq.LogoutRequest;
 import com.vnua.task_manager.dto.request.authReq.RefreshRequest;
+import com.vnua.task_manager.dto.request.authReq.PasswordChangeRequest;
+import com.vnua.task_manager.dto.request.authReq.PasswordResetRequest;
 import com.vnua.task_manager.dto.response.authRes.AuthenticationResponse;
 import com.vnua.task_manager.dto.response.authRes.IntrospectResponse;
 import com.vnua.task_manager.entity.InvalidatedToken;
@@ -31,7 +32,6 @@ import com.vnua.task_manager.exception.AppException;
 import com.vnua.task_manager.exception.ErrorCode;
 import com.vnua.task_manager.repository.InvalidatedTokenRepository;
 import com.vnua.task_manager.repository.UserRepository;
-
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -45,6 +45,7 @@ import lombok.extern.slf4j.Slf4j;
 public class AuthenticationServiceImpl implements AuthenticationService {
     UserRepository userRepository;
     InvalidatedTokenRepository invalidatedTokenRepository;
+    PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
 
     @NonFinal
     @Value("${jwt.signerKey}")
@@ -185,5 +186,56 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             });
 
         return stringJoiner.toString();
+    }
+
+    public Boolean requestPasswordReset(PasswordResetRequest request) {
+        var user = userRepository
+                .findByCode(request.getUserCode())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        
+        // Generate 6-digit OTP
+        String otpCode = generateSixDigitOTP();
+        user.setOtpCode(otpCode);
+        userRepository.save(user);
+        
+        // TODO: Send email with OTP to user
+        // The email sending logic would be implemented here
+        // Example:
+        // emailService.sendPasswordResetEmail(user.getEmail(), otpCode);
+        
+        log.info("Password reset OTP generated for user: {}", user.getCode());
+        return true;
+    }
+    
+    public void changePassword(PasswordChangeRequest request) {
+        var user = userRepository
+                .findByCode(request.getUserCode())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        
+        // Verify OTP code
+        if (!user.getOtpCode().equals(request.getOtpCode())) {
+            throw new AppException(ErrorCode.INVALID_OTP);
+        }
+        
+        // Verify old password
+        if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
+            throw new AppException(ErrorCode.INVALID_PASSWORD);
+        }
+        
+        // Update password
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        
+        // Clear OTP after successful password change
+        user.setOtpCode(null);
+        
+        userRepository.save(user);
+        
+        log.info("Password changed successfully for user: {}", user.getCode());
+    }
+    
+    private String generateSixDigitOTP() {
+        Random random = new Random();
+        int otp = 100000 + random.nextInt(900000); // Generates a number between 100000 and 999999
+        return String.valueOf(otp);
     }
 }
