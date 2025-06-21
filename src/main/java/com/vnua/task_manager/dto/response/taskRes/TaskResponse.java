@@ -5,6 +5,8 @@ import com.vnua.task_manager.entity.enumsOfEntity.TaskType;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Date;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -19,5 +21,6 @@ public class TaskResponse {
     Integer groupId;
     TaskState state;
     TaskType taskType;
+    Date deadline;
     Boolean isCreator;
 }

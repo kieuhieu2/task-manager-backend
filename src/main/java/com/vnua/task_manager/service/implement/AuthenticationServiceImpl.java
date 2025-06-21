@@ -225,7 +225,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         // Update password
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         
-        // Clear OTP after successful password change
+        // Clear OTP after a successful password change
         user.setOtpCode(null);
         
         userRepository.save(user);
@@ -235,7 +235,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     
     private String generateSixDigitOTP() {
         Random random = new Random();
-        int otp = 100000 + random.nextInt(900000); // Generates a number between 100000 and 999999
+        int otp = 100000 + random.nextInt(900000);
         return String.valueOf(otp);
     }
 

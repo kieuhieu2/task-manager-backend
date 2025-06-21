@@ -18,6 +18,7 @@ public interface TaskMapper {
     @Mapping(target = "description", source = "description")
     @Mapping(target = "percentDone", source = "percentDone")
     @Mapping(target = "taskType", source = "taskType")
+    @Mapping(target = "deadline", source = "deadline")
     @Mapping(target = "taskId", ignore = true)
     @Mapping(target = "group", ignore = true)
     @Mapping(target = "whoCreated", ignore = true)
@@ -38,17 +39,9 @@ public interface TaskMapper {
     @Mapping(target = "groupId", source = "task.group.groupId")
     @Mapping(target = "state", source = "userState")
     @Mapping(target = "taskType", source = "task.taskType")
+    @Mapping(target = "deadline", source = "task.deadline")
     @Mapping(target = "isCreator", source = "isCreator")
     TaskResponse toTaskResponse(Task task, TaskState userState, Boolean isCreator);
-
-//    @Mapping(target = "taskId", source = "taskId")
-//    @Mapping(target = "title", source = "title")
-//    @Mapping(target = "description", source = "description")
-//    @Mapping(target = "percentDone", source = "percentDone")
-//    @Mapping(target = "userId", source = "whoCreated.userId")
-//    @Mapping(target = "groupId", source = "group.groupId")
-//    @Mapping(target = "state", source = "state")
-//    List<TaskResponse> toListTaskResponse(List<Task> tasks);
 
     default List<TaskResponse> convertTasksToTaskResponses(List<Task> tasks) {
         return tasks.stream()

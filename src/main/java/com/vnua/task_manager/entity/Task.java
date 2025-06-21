@@ -1,11 +1,14 @@
 package com.vnua.task_manager.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.vnua.task_manager.entity.enumsOfEntity.TaskState;
 import com.vnua.task_manager.entity.enumsOfEntity.TaskType;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -54,6 +57,10 @@ public class Task {
 
     Date createdAt;
     Date updatedAt;
+
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    LocalDate deadline;
     @Builder.Default
     Boolean wasDeleted = false;
 
