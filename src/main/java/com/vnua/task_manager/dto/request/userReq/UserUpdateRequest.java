@@ -1,10 +1,7 @@
 package com.vnua.task_manager.dto.request.userReq;
 
 import java.time.LocalDate;
-import java.util.List;
-
 import com.vnua.task_manager.validator.DobConstraint;
-
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 

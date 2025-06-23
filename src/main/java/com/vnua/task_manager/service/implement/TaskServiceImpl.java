@@ -22,6 +22,8 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -108,16 +110,40 @@ public class TaskServiceImpl implements TaskService {
 
         List<Task> tasks = taskRepository.findByGroup_GroupId(groupId);
 
-        List<UserTaskStatus> userStatuses = userTaskStatusRepository.findAllByUser_UserIdAndTask_Group_GroupId(user.getUserId(), groupId);
+        // Get non-DONE tasks
+        List<UserTaskStatus> nonDoneStatuses = userTaskStatusRepository
+                .findAllByUser_UserIdAndTask_Group_GroupIdAndStateNot(user.getUserId(), groupId, TaskState.DONE);
+        
+        // Get 20 most recent DONE tasks
+        Pageable pageable = PageRequest.of(0, 20);
+        List<UserTaskStatus> doneStatuses = userTaskStatusRepository
+                .findByUser_UserIdAndTask_Group_GroupIdAndStateOrderByUpdatedAtDesc(
+                        user.getUserId(), groupId, TaskState.DONE, pageable);
+        
+        // Combine the two lists
+        List<UserTaskStatus> userStatuses = new ArrayList<>();
+        userStatuses.addAll(nonDoneStatuses);
+        userStatuses.addAll(doneStatuses);
+        
         Map<Integer, TaskState> taskIdToStateMap = userStatuses.stream()
                 .collect(Collectors.toMap(
                         uts -> uts.getTask().getTaskId(),
-                        UserTaskStatus::getState
+                        UserTaskStatus::getState,
+                        (existingState, newState) -> existingState
                 ));
 
+        // // Count DONE tasks in the result
+        // long doneTasksCount = result.stream()
+        //         .filter(task -> task.getState() == TaskState.DONE)
+        //         .count();
+                
+        // log.info("getTaskByGroupId - GroupId: {} - Total tasks: {} - DONE tasks: {}", 
+        //         groupId, result.size(), doneTasksCount);
+                
         return tasks.stream()
+                .filter(task -> taskIdToStateMap.containsKey(task.getTaskId()))
                 .map(task -> {
-                    TaskState userState = taskIdToStateMap.getOrDefault(task.getTaskId(), TaskState.TODO);
+                    TaskState userState = taskIdToStateMap.get(task.getTaskId());
                     Boolean isCreator = user.getUserId().equals(task.getWhoCreated().getUserId());
                     return taskMapper.toTaskResponse(task, userState, isCreator);
                 })
