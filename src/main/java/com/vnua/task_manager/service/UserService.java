@@ -21,4 +21,5 @@ public interface UserService {
     String getFullNameByUserCode(String userCode);
     UserResponse updateUserAvatar(String userCode, MultipartFile avatarFile);
     ResponseEntity<Resource> getUserAvatar(String userCode);
+    String getUserCodeByUsername(String username);
 }

@@ -120,7 +120,6 @@ public class GroupFactoryImpl implements GroupFactory {
         group.setDescriptionOfGroup(request.getDescriptionOfGroup());
         group.setCreatedAt(new Date());
         group.setUpdatedAt(new Date());
-        group.setWasDeleted(false);
 
         // Initialize collections
         group.setMembers(new HashSet<>());

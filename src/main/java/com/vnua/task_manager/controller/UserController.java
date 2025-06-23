@@ -122,4 +122,12 @@ public class UserController {
     public ResponseEntity<Resource> getUserAvatar(@PathVariable String userCode) {
         return userServiceImpl.getUserAvatar(userCode);
     }
+
+    @GetMapping("/check/{username}")
+    public ApiResponse<String> checkUserExists(@PathVariable String username) {
+        String userCode = userServiceImpl.getUserCodeByUsername(username);
+        return ApiResponse.<String>builder()
+                .result(userCode)
+                .build();
+    }
 }

@@ -207,4 +207,11 @@ public class UserServiceImpl implements UserService {
             return ResponseEntity.internalServerError().build();
         }
     }
+    
+    @Override
+    public String getUserCodeByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .map(User::getCode)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+    }
 }

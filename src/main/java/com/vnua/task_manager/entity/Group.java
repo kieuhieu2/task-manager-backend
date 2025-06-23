@@ -45,5 +45,4 @@ public class Group {
     String pathOfGroupFolder;
     Date createdAt;
     Date updatedAt;
-    Boolean wasDeleted = false;
 }

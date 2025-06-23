@@ -1,7 +1,6 @@
 package com.vnua.task_manager.mapper;
 
 import com.vnua.task_manager.dto.request.groupReq.GroupCreateReq;
-//import com.vnua.task_manager.dto.request.groupReq.GroupUpdateReq;
 import com.vnua.task_manager.dto.response.groupRes.GroupCreateRes;
 import com.vnua.task_manager.dto.response.groupRes.GroupGetRes;
 import com.vnua.task_manager.dto.response.groupRes.GroupUpdateRes;
@@ -22,7 +21,6 @@ public interface GroupMapper {
     @Mapping(target = "tasks", ignore = true)
     @Mapping(target = "createdAt", expression = "java(new java.util.Date())")
     @Mapping(target = "updatedAt", expression = "java(new java.util.Date())")
-    @Mapping(target = "wasDeleted", constant = "false")
     @Mapping(target = "descriptionOfGroup", source = "descriptionOfGroup")
     @Mapping(target = "faculty", source = "faculty")
     @Mapping(target = "department", source = "department")

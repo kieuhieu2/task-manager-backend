@@ -229,8 +229,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setOtpCode(null);
         
         userRepository.save(user);
-        
-        log.info("Password changed successfully for user: {}", user.getCode());
+
     }
     
     private String generateSixDigitOTP() {
@@ -239,6 +238,24 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return String.valueOf(otp);
     }
 
-    
+    public void forgetPassword(String userCode, String otpCode, String newPassword) {
+        User user = userRepository
+                .findByCode(userCode)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        
+        // Verify OTP code
+        if (user.getOtpCode() == null || !user.getOtpCode().equals(otpCode)) {
+            throw new AppException(ErrorCode.INVALID_OTP);
+        }
+        
+        // Update password
+        user.setPassword(passwordEncoder.encode(newPassword));
+        
+        // Clear OTP after a successful password reset
+        user.setOtpCode(null);
+        
+        userRepository.save(user);
+
+    }
     
 }

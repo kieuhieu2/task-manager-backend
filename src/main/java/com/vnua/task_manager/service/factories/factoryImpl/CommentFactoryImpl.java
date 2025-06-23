@@ -41,7 +41,6 @@ public class CommentFactoryImpl implements CommentFactory {
 
         comment.setTask(task);
         comment.setCommentText(commentReq.getCommentText());
-        comment.setWasDeleted(false);
         comment.setCreatedAt(new java.util.Date());
         return comment;
     }

@@ -18,4 +18,5 @@ public interface AuthenticationService {
     public AuthenticationResponse refreshToken(RefreshRequest request) throws ParseException, JOSEException;
     public Boolean requestPasswordReset(PasswordResetRequest request);
     public void changePassword(PasswordChangeRequest request);
+    public void forgetPassword(String userCode, String otpCode, String newPassword);
 }

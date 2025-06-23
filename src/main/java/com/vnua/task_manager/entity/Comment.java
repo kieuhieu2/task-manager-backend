@@ -28,5 +28,4 @@ public class Comment {
     String commentText;
     Date createdAt;
     Date updatedAt;
-    Boolean wasDeleted = false;
 }

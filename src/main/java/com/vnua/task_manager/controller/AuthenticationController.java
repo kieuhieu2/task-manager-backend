@@ -8,6 +8,7 @@ import com.vnua.task_manager.dto.request.authReq.IntrospectRequest;
 import com.vnua.task_manager.dto.request.authReq.LogoutRequest;
 import com.vnua.task_manager.dto.request.authReq.PasswordChangeRequest;
 import com.vnua.task_manager.dto.request.authReq.PasswordResetRequest;
+import com.vnua.task_manager.dto.request.authReq.PasswordResetWithOtpRequest;
 import com.vnua.task_manager.dto.request.authReq.RefreshRequest;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -65,6 +66,12 @@ public class AuthenticationController {
     @PostMapping("/password-change")
     ApiResponse<Void> changePassword(@RequestBody PasswordChangeRequest request) {
         authenticationServiceImpl.changePassword(request);
+        return ApiResponse.<Void>builder().build();
+    }
+    
+    @PostMapping("/forget-password")
+    ApiResponse<Void> forgetPassword(@RequestBody PasswordResetWithOtpRequest request) {
+        authenticationServiceImpl.forgetPassword(request.getUserCode(), request.getOtpCode(), request.getNewPassword());
         return ApiResponse.<Void>builder().build();
     }
 }
