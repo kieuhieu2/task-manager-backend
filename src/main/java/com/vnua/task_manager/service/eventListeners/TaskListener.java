@@ -8,17 +8,12 @@ import com.vnua.task_manager.event.TaskCreatedEvent;
 import com.vnua.task_manager.repository.GroupRepository;
 import com.vnua.task_manager.repository.NotificationRepository;
 import com.vnua.task_manager.repository.UserNotificationRepository;
-import com.vnua.task_manager.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.antlr.v4.runtime.misc.LogManager;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 @Component

@@ -24,7 +24,8 @@ public enum ErrorCode {
     COMMENT_NOT_FOUND(1014, "Comment not found", HttpStatus.NOT_FOUND),
     NOTIFICATION_NOT_FOUND(1015,"Notification not found", HttpStatus.NOT_FOUND ),
     USER_NOT_FOUND(1016, "User not found", HttpStatus.NOT_FOUND ),
-    INVALID_OTP(1017, "Invalid OTP code", HttpStatus.BAD_REQUEST);
+    INVALID_OTP(1017, "Invalid OTP code", HttpStatus.BAD_REQUEST),
+    FILE_UPLOAD_FAILED(1018, "File upload failed", HttpStatus.INTERNAL_SERVER_ERROR);
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {
         this.code = code;

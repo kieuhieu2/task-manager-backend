@@ -7,4 +7,5 @@ import java.util.List;
 public interface NotificationService {
     List<NotificationRes> getMyNotifications(String userCode);
     Boolean setNotificationWasRead(WasReadNotificationReq request);
+    Boolean markNotificationAsRead(Long notificationId);
 }

@@ -31,4 +31,11 @@ public class NotificationController {
                 .result(notificationService.setNotificationWasRead(request))
                 .build();
     }
+    
+    @PutMapping("/{notificationId}/read")
+    public ApiResponse<Boolean> markNotificationAsRead(@PathVariable Long notificationId) {
+        return ApiResponse.<Boolean>builder()
+                .result(notificationService.markNotificationAsRead(notificationId))
+                .build();
+    }
 }

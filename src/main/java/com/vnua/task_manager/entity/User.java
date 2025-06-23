@@ -28,7 +28,6 @@ public class User {
     String firstName;
     LocalDate dob;
     String lastName;
-    
     String otpCode;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -74,4 +73,5 @@ public class User {
     @Builder.Default
     Boolean wasDeleted = false;
     String pathOfUserFolder;
+    String avatar;
 }

@@ -1,14 +1,24 @@
 package com.vnua.task_manager.service.implement;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.List;
 import com.vnua.task_manager.entity.User;
 import com.vnua.task_manager.service.UserService;
+import com.vnua.task_manager.utils.FileUtils;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,6 +38,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -125,5 +136,75 @@ public class UserServiceImpl implements UserService {
         Pageable pageable = PageRequest.of(page, size);
         Page<User> userPage = userRepository.findAll(pageable);
         return userPage.map(userMapper::toUserResponse);
+    }
+
+    @Override
+    public UserResponse updateUserAvatar(String userCode, MultipartFile avatarFile) {
+        // Find user by userCode
+        User user = userRepository.findByCode(userCode)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        
+        try {
+            // Ensure user folder exists
+            String userFolder = "FileOfUser/" + user.getUsername();
+            File folder = new File(userFolder);
+            if (!folder.exists()) {
+                boolean folderCreated = folder.mkdirs();
+                if (!folderCreated) {
+                    throw new AppException(ErrorCode.FOLDER_CREATION_FAILED);
+                }
+            }
+            
+            // Save avatar file to user folder
+            String filePath = FileUtils.saveFileToPath(userFolder, avatarFile);
+            
+            // Update user's avatar path
+            user.setAvatar(filePath);
+            
+            // Save user
+            user = userRepository.save(user);
+            
+            return userMapper.toUserResponse(user);
+        } catch (IOException e) {
+            log.error("Failed to update avatar for user with code: {}", userCode, e);
+            throw new AppException(ErrorCode.FILE_UPLOAD_FAILED);
+        }
+    }
+
+    @Override
+    public ResponseEntity<Resource> getUserAvatar(String userCode) {
+        try {
+            // Find user by userCode
+            User user = userRepository.findByCode(userCode)
+                    .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+            
+            // Check if user has an avatar
+            if (user.getAvatar() == null || user.getAvatar().isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+            
+            // Get the avatar path
+            Path avatarPath = Paths.get(user.getAvatar());
+            Resource resource = new UrlResource(avatarPath.toUri());
+            
+            // Check if the file exists and is readable
+            if (resource.exists() && resource.isReadable()) {
+                // Determine the content type of the file
+                String contentType = Files.probeContentType(avatarPath);
+                if (contentType == null) {
+                    contentType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
+                }
+                
+                return ResponseEntity.ok()
+                        .contentType(MediaType.parseMediaType(contentType))
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + avatarPath.getFileName().toString() + "\"")
+                        .body(resource);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (IOException e) {
+            log.error("Failed to load avatar for user with code: {}", userCode, e);
+            return ResponseEntity.internalServerError().build();
+        }
     }
 }
