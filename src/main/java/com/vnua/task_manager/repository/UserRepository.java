@@ -18,4 +18,6 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     @Query("SELECT CONCAT(COALESCE(u.firstName, ''), ' ', COALESCE(u.lastName, '')) FROM User u WHERE u.code = :code")
     String findFullNameByUserCode(@Param("code") String code);
+
+    void deleteByCode(String userCode);
 }

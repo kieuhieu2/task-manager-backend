@@ -13,7 +13,7 @@ public interface UserService {
     UserResponse updateUser(String userId, UserUpdateRequest request);
     List<UserResponse> getUsers();
     Page<UserResponse> getUsersWithPagination(int page, int size);
-    void deleteUser(String userId);
+    Boolean deleteUser(String userId);
     UserResponse getUserByUserCode(String userCode);
     String getFullNameByUserCode(String userCode);
 }

@@ -14,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import com.vnua.task_manager.dto.request.userReq.UserCreationRequest;
 import com.vnua.task_manager.dto.request.userReq.UserUpdateRequest;
 import com.vnua.task_manager.dto.response.userRes.UserResponse;
@@ -92,13 +93,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    public void deleteUser(String userId) {
-        userRepository.deleteById(userId);
+    @Transactional
+    public Boolean deleteUser(String userId) {
+        userRepository.deleteByCode(userId);
+        return true;
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     public List<UserResponse> getUsers() {
-        log.info("In method get Users");
         return userRepository.findAll().stream().map(userMapper::toUserResponse).toList();
     }
 
@@ -109,12 +111,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String getFullNameByUserCode(String userCode) {
-        String fullname = userRepository.findFullNameByUserCode(userCode);
-        if (fullname == null) {
+        String fullName = userRepository.findFullNameByUserCode(userCode);
+        if (fullName == null) {
             return new AppException(ErrorCode.USER_NOT_EXISTED).getMessage();
         }
         
-        return fullname;
+        return fullName;
     }
     
     @PreAuthorize("hasRole('ADMIN')")

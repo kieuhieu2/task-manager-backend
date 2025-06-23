@@ -79,8 +79,7 @@ public class TaskServiceImpl implements TaskService {
                     break;
             }
 
-            String message = "User " + task.getWhoCreated().getUsername() + " created a new task: " + task.getTitle()
-                    + " at " + task.getCreatedAt();
+            String message = "Người dùng " + task.getWhoCreated().getUsername() + " đã tạo công việc: " + task.getTitle();
             applicationEventPublisher.publishEvent(new TaskCreatedEvent(this, message, request.getGroupId()));
         } catch (IOException e) {
             throw new RuntimeException("Error while saving task: " + e.getMessage());
