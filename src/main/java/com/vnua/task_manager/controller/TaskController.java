@@ -3,6 +3,7 @@ package com.vnua.task_manager.controller;
 import com.vnua.task_manager.dto.ApiResponse;
 import com.vnua.task_manager.dto.request.taskReq.FileOfTaskRequest;
 import com.vnua.task_manager.dto.request.taskReq.TaskCreationRequest;
+import com.vnua.task_manager.dto.request.taskReq.TaskDateRangeRequest;
 import com.vnua.task_manager.dto.request.taskReq.UpdateTaskProgressRequest;
 import com.vnua.task_manager.dto.response.taskRes.MemberWorkProgressResponse;
 import com.vnua.task_manager.dto.response.taskRes.TaskResponse;
@@ -91,6 +92,13 @@ public class TaskController {
             @Valid @RequestBody UpdateTaskProgressRequest request) {
         return ApiResponse.<String>builder()
                 .result(taskService.updateTaskProgress(taskId, request))
+                .build();
+    }
+
+    @PostMapping("/date-range")
+    public ApiResponse<List<TaskResponse>> getTasksByDateRange(@Valid @RequestBody TaskDateRangeRequest request) {
+        return ApiResponse.<List<TaskResponse>>builder()
+                .result(taskService.getTasksByDateRangeAndUser(request))
                 .build();
     }
 }

@@ -3,6 +3,7 @@ package com.vnua.task_manager.service.implement;
 import com.vnua.task_manager.dto.request.taskReq.FileOfTaskRequest;
 import com.vnua.task_manager.dto.request.taskReq.TaskCreationRequest;
 import com.vnua.task_manager.dto.request.taskReq.UpdateTaskProgressRequest;
+import com.vnua.task_manager.dto.request.taskReq.TaskDateRangeRequest;
 import com.vnua.task_manager.dto.response.taskRes.MemberWorkProgressResponse;
 import com.vnua.task_manager.dto.response.taskRes.TaskResponse;
 import com.vnua.task_manager.entity.*;
@@ -307,5 +308,33 @@ public class TaskServiceImpl implements TaskService {
         
         userTaskStatusRepository.save(statusOfTask);
         return "Update task progress successfully";
+    }
+
+    @Override
+    public List<TaskResponse> getTasksByDateRangeAndUser(TaskDateRangeRequest request) {
+        User user = userRepository.findByCode(request.getUserCode())
+                .orElseThrow(() -> new IllegalArgumentException("User not found with code: " + request.getUserCode()));
+        
+        List<Task> tasks = taskRepository.findTasksByUserCodeAndDateRange(
+                request.getUserCode(), 
+                request.getFromDate(), 
+                request.getToDate());
+        
+        return tasks.stream()
+                .map(task -> {
+                    // Get the user's specific task state from UserTaskStatus
+                    UserTaskId taskIdKey = new UserTaskId(user.getUserId(), task.getTaskId());
+                    UserTaskStatus statusOfTask = userTaskStatusRepository.findById(taskIdKey)
+                            .orElse(null);
+                    
+                    // If no status is found, use the task's state as default
+                    TaskState userState = (statusOfTask != null) 
+                            ? statusOfTask.getState() 
+                            : task.getState();
+                    
+                    Boolean isCreator = user.getUserId().equals(task.getWhoCreated().getUserId());
+                    return taskMapper.toTaskResponse(task, userState, isCreator);
+                })
+                .collect(Collectors.toList());
     }
 }
