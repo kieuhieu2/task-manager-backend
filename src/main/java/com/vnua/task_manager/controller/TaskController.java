@@ -3,6 +3,7 @@ package com.vnua.task_manager.controller;
 import com.vnua.task_manager.dto.ApiResponse;
 import com.vnua.task_manager.dto.request.taskReq.FileOfTaskRequest;
 import com.vnua.task_manager.dto.request.taskReq.TaskCreationRequest;
+import com.vnua.task_manager.dto.request.taskReq.UpdateTaskProgressRequest;
 import com.vnua.task_manager.dto.response.taskRes.MemberWorkProgressResponse;
 import com.vnua.task_manager.dto.response.taskRes.TaskResponse;
 import com.vnua.task_manager.entity.enumsOfEntity.TaskState;
@@ -81,6 +82,15 @@ public class TaskController {
     public ApiResponse<List<MemberWorkProgressResponse>> getWorkProcessOfMembersInGroup(@PathVariable Integer taskId) {
         return ApiResponse.<List<MemberWorkProgressResponse>>builder()
                 .result(taskService.getWorkProcessOfMembersInGroup(taskId))
+                .build();
+    }
+
+    @PutMapping("/percent-done/{taskId}")
+    public ApiResponse<String> updateTaskProgress(
+            @PathVariable Integer taskId,
+            @Valid @RequestBody UpdateTaskProgressRequest request) {
+        return ApiResponse.<String>builder()
+                .result(taskService.updateTaskProgress(taskId, request))
                 .build();
     }
 }

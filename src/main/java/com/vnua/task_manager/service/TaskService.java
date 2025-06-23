@@ -2,6 +2,7 @@ package com.vnua.task_manager.service;
 
 import com.vnua.task_manager.dto.request.taskReq.FileOfTaskRequest;
 import com.vnua.task_manager.dto.request.taskReq.TaskCreationRequest;
+import com.vnua.task_manager.dto.request.taskReq.UpdateTaskProgressRequest;
 import com.vnua.task_manager.dto.response.taskRes.MemberWorkProgressResponse;
 import com.vnua.task_manager.dto.response.taskRes.TaskResponse;
 import com.vnua.task_manager.entity.enumsOfEntity.TaskState;
@@ -17,4 +18,5 @@ public interface TaskService {
     Boolean deleteFileOfTask(Integer taskId);
     Boolean addFileToTask(Integer taskId, FileOfTaskRequest request);
     List<MemberWorkProgressResponse> getWorkProcessOfMembersInGroup(Integer taskId);
+    String updateTaskProgress(Integer taskId, UpdateTaskProgressRequest request);
 }

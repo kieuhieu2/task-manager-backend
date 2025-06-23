@@ -2,6 +2,7 @@ package com.vnua.task_manager.service.implement;
 
 import com.vnua.task_manager.dto.request.taskReq.FileOfTaskRequest;
 import com.vnua.task_manager.dto.request.taskReq.TaskCreationRequest;
+import com.vnua.task_manager.dto.request.taskReq.UpdateTaskProgressRequest;
 import com.vnua.task_manager.dto.response.taskRes.MemberWorkProgressResponse;
 import com.vnua.task_manager.dto.response.taskRes.TaskResponse;
 import com.vnua.task_manager.entity.*;
@@ -277,5 +278,34 @@ public class TaskServiceImpl implements TaskService {
         }
         
         return responses;
+    }
+    
+    @Override
+    public String updateTaskProgress(Integer taskId, UpdateTaskProgressRequest request) {
+        Task task = taskRepository.findByTaskId(taskId)
+                .orElseThrow(() -> new IllegalArgumentException("Task not found: " + taskId));
+                
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("User not found: " + request.getUserId()));
+                
+        UserTaskId taskIdKey = new UserTaskId(user.getUserId(), task.getTaskId());
+        
+        UserTaskStatus statusOfTask = userTaskStatusRepository.findById(taskIdKey)
+                .orElseThrow(() -> new IllegalArgumentException("No task assignment for user and task"));
+                
+        statusOfTask.setPercentDone(request.getPercentDone());
+        statusOfTask.setUpdatedAt(new java.util.Date());
+        
+        // Automatically update state based on percentDone
+        if (request.getPercentDone() == 0) {
+            statusOfTask.setState(TaskState.TODO);
+        } else if (request.getPercentDone() == 100) {
+            statusOfTask.setState(TaskState.DONE);
+        } else if (statusOfTask.getState() == TaskState.TODO) {
+            statusOfTask.setState(TaskState.IN_PROGRESS);
+        }
+        
+        userTaskStatusRepository.save(statusOfTask);
+        return "Update task progress successfully";
     }
 }
