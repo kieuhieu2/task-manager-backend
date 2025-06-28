@@ -24,7 +24,7 @@ import org.springframework.web.filter.CorsFilter;
 public class SecurityConfig {
     private final String[] PUBLIC_ENDPOINTS = {
         "/users", "/auth/token", "/auth/introspect", "/auth/logout", "/auth/refresh",
-        "/swagger-ui.html/**", "/v3/api-docs/**", "/swagger-ui/**", "users/check/*"
+        "/swagger-ui.html/**", "/v3/api-docs/**", "/swagger-ui/**", "users/check/*", "auth/password-reset-request",
     };
 
     @Autowired

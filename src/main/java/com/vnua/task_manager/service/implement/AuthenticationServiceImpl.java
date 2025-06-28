@@ -8,8 +8,10 @@ import java.util.Random;
 import java.util.StringJoiner;
 import java.util.UUID;
 import com.vnua.task_manager.entity.User;
+import com.vnua.task_manager.event.PasswordResetEvent;
 import com.vnua.task_manager.service.AuthenticationService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -45,6 +47,7 @@ import lombok.extern.slf4j.Slf4j;
 public class AuthenticationServiceImpl implements AuthenticationService {
     UserRepository userRepository;
     InvalidatedTokenRepository invalidatedTokenRepository;
+    ApplicationEventPublisher eventPublisher;
     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
 
     @NonFinal
@@ -198,12 +201,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setOtpCode(otpCode);
         userRepository.save(user);
         
-        // TODO: Send email with OTP to user
-        // The email sending logic would be implemented here
-        // Example:
-        // emailService.sendPasswordResetEmail(user.getEmail(), otpCode);
+        // Publish email event
+        if (user.getEmail() != null && !user.getEmail().isEmpty()) {
+            eventPublisher.publishEvent(new PasswordResetEvent(this, user.getEmail(), otpCode, user.getUsername()));
+            log.info("Password reset event published for user: {}", user.getCode());
+        } else {
+            log.warn("User {} does not have an email address, cannot send password reset email", user.getCode());
+        }
         
-        log.info("Password reset OTP generated for user: {}", user.getCode());
         return true;
     }
     

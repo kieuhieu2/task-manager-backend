@@ -29,6 +29,7 @@ public class User {
     LocalDate dob;
     String lastName;
     String otpCode;
+    String email;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserNotification> userNotifications = new HashSet<>();
