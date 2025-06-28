@@ -3,9 +3,7 @@ package com.vnua.task_manager.entity;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-
 import jakarta.persistence.*;
-
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 

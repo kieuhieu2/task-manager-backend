@@ -42,6 +42,6 @@ file:
 
 notification:
   email:
-    mailersend-token: s
+    mailersend-token: m
     from-email: admin@test-r83ql3pnn1vgzw1j.mlsender.net
     from-name: kieuhieu2
