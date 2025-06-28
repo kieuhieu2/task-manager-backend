@@ -42,6 +42,6 @@ file:
 
 notification:
   email:
-    mailersend-token: mlsn.b37baf524b734439efc947b7e07aa0a15c3872596babe8eafb0b0f453c021a55
+    mailersend-token: s
     from-email: admin@test-r83ql3pnn1vgzw1j.mlsender.net
     from-name: kieuhieu2
