@@ -4,7 +4,6 @@ import com.vnua.task_manager.entity.enumsOfEntity.TaskState;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.util.Date;
 
 @Entity
@@ -29,6 +28,8 @@ public class UserTaskStatus {
     private TaskState state = TaskState.TODO;
 
     private Integer percentDone = 0;
+
+    private Integer positionInColumn;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt = new Date();

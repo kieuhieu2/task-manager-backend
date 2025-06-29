@@ -5,9 +5,9 @@ import com.vnua.task_manager.dto.request.taskReq.FileOfTaskRequest;
 import com.vnua.task_manager.dto.request.taskReq.TaskCreationRequest;
 import com.vnua.task_manager.dto.request.taskReq.TaskDateRangeRequest;
 import com.vnua.task_manager.dto.request.taskReq.UpdateTaskProgressRequest;
+import com.vnua.task_manager.dto.request.taskReq.UpdateTaskStateRequest;
 import com.vnua.task_manager.dto.response.taskRes.MemberWorkProgressResponse;
 import com.vnua.task_manager.dto.response.taskRes.TaskResponse;
-import com.vnua.task_manager.entity.enumsOfEntity.TaskState;
 import com.vnua.task_manager.service.TaskService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -51,10 +51,10 @@ public class TaskController {
                 .body(fileResource);
     }
 
-    @PutMapping("update-state/{taskId}/{newState}")
-    public ApiResponse<String> updateStatusOfTask(@PathVariable Integer taskId, @PathVariable TaskState newState) {
+    @PutMapping("update-task-state")
+    public ApiResponse<String> updateStatusOfTask(@Valid @RequestBody UpdateTaskStateRequest request) {
         return ApiResponse.<String>builder()
-                .result(taskService.updateStatusOfTask(taskId, newState))
+                .result(taskService.updateStatusAndPosition(request))
                 .build();
     }
 

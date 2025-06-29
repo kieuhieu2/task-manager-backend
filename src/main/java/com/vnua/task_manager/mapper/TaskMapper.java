@@ -41,7 +41,12 @@ public interface TaskMapper {
     @Mapping(target = "taskType", source = "task.taskType")
     @Mapping(target = "deadline", source = "task.deadline")
     @Mapping(target = "isCreator", source = "isCreator")
-    TaskResponse toTaskResponse(Task task, TaskState userState, Boolean isCreator);
+    @Mapping(target = "positionInColumn", source = "positionInColumn")
+    TaskResponse toTaskResponse(Task task, TaskState userState, Boolean isCreator, Integer positionInColumn);
+
+    default TaskResponse toTaskResponse(Task task, TaskState userState, Boolean isCreator) {
+        return toTaskResponse(task, userState, isCreator, null);
+    }
 
     default List<TaskResponse> convertTasksToTaskResponses(List<Task> tasks) {
         return tasks.stream()

@@ -23,4 +23,5 @@ public class TaskResponse {
     TaskType taskType;
     Date deadline;
     Boolean isCreator;
+    Integer positionInColumn;
 }
