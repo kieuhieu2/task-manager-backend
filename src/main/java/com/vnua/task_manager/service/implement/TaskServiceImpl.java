@@ -129,16 +129,18 @@ public class TaskServiceImpl implements TaskService {
         List<UserTaskStatus> userStatuses = new ArrayList<>();
         userStatuses.addAll(nonDoneTasks);
         userStatuses.addAll(recentDoneTasks);
-        
-        // Create maps for task state and position
+
+        // Create maps for task state, position, and percentDone
         Map<Integer, TaskState> taskIdToStateMap = new HashMap<>();
         Map<Integer, Integer> taskIdToPositionMap = new HashMap<>();
+        Map<Integer, Integer> taskIdToPercentDoneMap = new HashMap<>();
         
         // Populate maps with data from UserTaskStatus
         for (UserTaskStatus status : userStatuses) {
             Integer taskId = status.getTask().getTaskId();
             taskIdToStateMap.put(taskId, status.getState());
             taskIdToPositionMap.put(taskId, status.getPositionInColumn());
+            taskIdToPercentDoneMap.put(taskId, status.getPercentDone());
         }
                 
         return tasks.stream()
@@ -146,8 +148,9 @@ public class TaskServiceImpl implements TaskService {
                 .map(task -> {
                     TaskState userState = taskIdToStateMap.get(task.getTaskId());
                     Integer position = taskIdToPositionMap.get(task.getTaskId());
+                    Integer percentDone = taskIdToPercentDoneMap.get(task.getTaskId());
                     Boolean isCreator = user.getUserId().equals(task.getWhoCreated().getUserId());
-                    return taskMapper.toTaskResponse(task, userState, isCreator, position);
+                    return taskMapper.toTaskResponse(task, userState, isCreator, position, percentDone);
                 })
                 .collect(Collectors.toList());
     }
@@ -306,8 +309,12 @@ public class TaskServiceImpl implements TaskService {
                             ? statusOfTask.getPositionInColumn()
                             : null;
                     
+                    Integer percentDone = (statusOfTask != null)
+                            ? statusOfTask.getPercentDone()
+                            : task.getPercentDone();
+                    
                     Boolean isCreator = user.getUserId().equals(task.getWhoCreated().getUserId());
-                    return taskMapper.toTaskResponse(task, userState, isCreator, positionInColumn);
+                    return taskMapper.toTaskResponse(task, userState, isCreator, positionInColumn, percentDone);
                 })
                 .collect(Collectors.toList());
     }
@@ -416,7 +423,7 @@ public class TaskServiceImpl implements TaskService {
             UserTaskStatus status = tasksToReorganize.get(i);
             int newPosition = i + 1; // Position starts from 1
             
-            // Update if position is different from the expected sequence
+            // Update if positions are different from the expected sequence
             if (newPosition != status.getPositionInColumn()) {
                 status.setPositionInColumn(newPosition);
                 userTaskStatusRepository.save(status);

@@ -27,7 +27,7 @@ public class UserTaskStatus {
     @Enumerated(EnumType.STRING)
     private TaskState state = TaskState.TODO;
 
-    private Integer percentDone = 0;
+    private Integer percentDone;
 
     private Integer positionInColumn;
 
