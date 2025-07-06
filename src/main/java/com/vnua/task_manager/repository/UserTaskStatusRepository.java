@@ -52,4 +52,7 @@ public interface UserTaskStatusRepository extends JpaRepository<UserTaskStatus, 
             @Param("userId") String userId, 
             @Param("groupId") Integer groupId,
             @Param("limit") Integer limit);
+
+    void deleteByUser_UserIdAndTask_TaskId(String userId, Integer taskId);
+
 }

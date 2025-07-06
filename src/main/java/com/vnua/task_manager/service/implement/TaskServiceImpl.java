@@ -2,11 +2,13 @@ package com.vnua.task_manager.service.implement;
 
 import com.vnua.task_manager.dto.request.taskReq.FileOfTaskRequest;
 import com.vnua.task_manager.dto.request.taskReq.TaskCreationRequest;
+import com.vnua.task_manager.dto.request.taskReq.TaskUpdateRequest;
 import com.vnua.task_manager.dto.request.taskReq.UpdateTaskProgressRequest;
 import com.vnua.task_manager.dto.request.taskReq.TaskDateRangeRequest;
 import com.vnua.task_manager.dto.request.taskReq.UpdateTaskStateRequest;
 import com.vnua.task_manager.dto.response.taskRes.MemberWorkProgressResponse;
 import com.vnua.task_manager.dto.response.taskRes.TaskResponse;
+import com.vnua.task_manager.dto.response.taskRes.TaskUpdateResponse;
 import com.vnua.task_manager.entity.*;
 import com.vnua.task_manager.entity.enumsOfEntity.TaskState;
 import com.vnua.task_manager.event.TaskCreatedEvent;
@@ -170,6 +172,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Transactional
     public Boolean deleteTask(Integer taskId) {
         Task task = taskRepository.findByTaskId(taskId)
                 .orElseThrow(() -> new IllegalArgumentException("Task not found: " + taskId));
@@ -187,6 +190,10 @@ public class TaskServiceImpl implements TaskService {
                         System.err.println("File does not exits: " + filePath);
                     }
                 }
+            // Delete all user task statuses for this task before deleting the task
+            List<UserTaskStatus> userTaskStatuses = userTaskStatusRepository.findAllByTask_TaskId(taskId);
+            userTaskStatusRepository.deleteAll(userTaskStatuses);
+            
             taskRepository.delete(task);
             return true;
         } catch (Exception e) {
@@ -416,15 +423,16 @@ public class TaskServiceImpl implements TaskService {
         }
         
         // Sort tasks by position to ensure correct ordering
-        tasksToReorganize.sort(Comparator.comparing(UserTaskStatus::getPositionInColumn));
+        // Using nullsLast to handle null positionInColumn values
+        tasksToReorganize.sort(Comparator.comparing(UserTaskStatus::getPositionInColumn, Comparator.nullsLast(Integer::compareTo)));
         
         // Reassign positions sequentially, always starting from 1
         for (int i = 0; i < tasksToReorganize.size(); i++) {
             UserTaskStatus status = tasksToReorganize.get(i);
             int newPosition = i + 1; // Position starts from 1
             
-            // Update if positions are different from the expected sequence
-            if (newPosition != status.getPositionInColumn()) {
+            // Update if positions are different from the expected sequence or if position is null
+            if (status.getPositionInColumn() == null || newPosition != status.getPositionInColumn()) {
                 status.setPositionInColumn(newPosition);
                 userTaskStatusRepository.save(status);
             }
@@ -456,4 +464,25 @@ public class TaskServiceImpl implements TaskService {
         }
     }
     
+    @Override
+    @Transactional
+    public TaskUpdateResponse updateTask(TaskUpdateRequest request) {
+        Task task = taskRepository.findByTaskId(request.getTaskId())
+                .orElseThrow(() -> new IllegalArgumentException("Task not found: " + request.getTaskId()));
+        
+        if (request.getTitle() != null) {
+            task.setTitle(request.getTitle());
+        }
+        
+        if (request.getDescription() != null) {
+            task.setDescription(request.getDescription());
+        }
+        
+        if (request.getDeadline() != null) {
+            task.setDeadline(request.getDeadline());
+        }
+        
+        taskRepository.save(task);
+        return taskMapper.toTaskUpdateResponse(task);
+    }
 }

@@ -3,6 +3,7 @@ package com.vnua.task_manager.mapper;
 import com.vnua.task_manager.dto.request.taskReq.TaskCreationRequest;
 import com.vnua.task_manager.dto.response.taskRes.TaskResponse;
 
+import com.vnua.task_manager.dto.response.taskRes.TaskUpdateResponse;
 import com.vnua.task_manager.entity.Task;
 import com.vnua.task_manager.entity.enumsOfEntity.TaskState;
 import org.mapstruct.Mapper;
@@ -66,4 +67,6 @@ public interface TaskMapper {
                 .map(task -> toTaskResponse(task, TaskState.TODO, false))
                 .collect(Collectors.toList());
     }
+
+    TaskUpdateResponse toTaskUpdateResponse(Task task);
 }

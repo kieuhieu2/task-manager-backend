@@ -4,10 +4,12 @@ import com.vnua.task_manager.dto.ApiResponse;
 import com.vnua.task_manager.dto.request.taskReq.FileOfTaskRequest;
 import com.vnua.task_manager.dto.request.taskReq.TaskCreationRequest;
 import com.vnua.task_manager.dto.request.taskReq.TaskDateRangeRequest;
+import com.vnua.task_manager.dto.request.taskReq.TaskUpdateRequest;
 import com.vnua.task_manager.dto.request.taskReq.UpdateTaskProgressRequest;
 import com.vnua.task_manager.dto.request.taskReq.UpdateTaskStateRequest;
 import com.vnua.task_manager.dto.response.taskRes.MemberWorkProgressResponse;
 import com.vnua.task_manager.dto.response.taskRes.TaskResponse;
+import com.vnua.task_manager.dto.response.taskRes.TaskUpdateResponse;
 import com.vnua.task_manager.service.TaskService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -99,6 +101,13 @@ public class TaskController {
     public ApiResponse<List<TaskResponse>> getTasksByDateRange(@Valid @RequestBody TaskDateRangeRequest request) {
         return ApiResponse.<List<TaskResponse>>builder()
                 .result(taskService.getTasksByDateRangeAndUser(request))
+                .build();
+    }
+
+    @PutMapping
+    public ApiResponse<TaskUpdateResponse> updateTask(@Valid @RequestBody TaskUpdateRequest request) {
+        return ApiResponse.<TaskUpdateResponse>builder()
+                .result(taskService.updateTask(request))
                 .build();
     }
 }
