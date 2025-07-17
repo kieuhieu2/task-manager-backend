@@ -14,6 +14,8 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.Set;
 
 @Component
@@ -26,6 +28,7 @@ public class TaskListener {
 
     @Async
     @EventListener
+    @Transactional
     public void taskCreatedEventListener(TaskCreatedEvent taskCreatedEvent) {
         Notification notification = new Notification();
         notification.setMessage(taskCreatedEvent.getMessage());

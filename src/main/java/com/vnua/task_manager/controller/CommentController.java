@@ -7,7 +7,10 @@ import com.vnua.task_manager.service.CommentService;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
@@ -18,9 +21,18 @@ public class CommentController {
     CommentService commentService;
 
     @PostMapping
-    public ApiResponse<Boolean> createComment(@RequestBody CommentReq commentReq) {
+    public ApiResponse<Boolean> createComment(
+            @RequestParam("taskId") Integer taskId,
+            @RequestParam("commentText") String commentText,
+            @RequestParam(value = "commentFile", required = false) MultipartFile commentFile) {
+        
+        CommentReq commentReq = CommentReq.builder()
+                .taskId(taskId)
+                .commentText(commentText)
+                .build();
+                
         return ApiResponse.<Boolean>builder()
-                .result(commentService.createComment(commentReq))
+                .result(commentService.createComment(commentReq, commentFile))
                 .build();
     }
 
@@ -43,5 +55,12 @@ public class CommentController {
         return ApiResponse.<Boolean>builder()
                 .result(commentService.deleteComment(commentId))
                 .build();
+    }
+    
+    @GetMapping("/file/{taskId}/{commentId}")
+    public ResponseEntity<Resource> getCommentFile(
+            @PathVariable Integer taskId, 
+            @PathVariable Integer commentId) {
+        return commentService.getCommentFile(taskId, commentId);
     }
 }

@@ -26,6 +26,7 @@ public class Comment {
     User user;
 
     String commentText;
+    String filePath;
     Date createdAt;
     Date updatedAt;
 }

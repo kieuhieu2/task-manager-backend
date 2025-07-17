@@ -13,4 +13,5 @@ public class CommentRes {
     String commentText;
     String userName;
     String userCode;
+    String filePath;
 }
